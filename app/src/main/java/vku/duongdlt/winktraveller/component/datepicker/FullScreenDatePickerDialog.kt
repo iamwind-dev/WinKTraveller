@@ -2,15 +2,20 @@ package vku.duongdlt.winktraveller.component.datepicker
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
@@ -23,10 +28,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -35,6 +43,8 @@ import vku.duongdlt.winktraveller.R
 import vku.duongdlt.winktraveller.component.BookingHeader
 import vku.duongdlt.winktraveller.component.FullScreenDialog
 import vku.duongdlt.winktraveller.component.PrimaryButton
+import vku.duongdlt.winktraveller.component.TourSmallItem
+import vku.duongdlt.winktraveller.component.TripitacaRoundedInputField
 import vku.duongdlt.winktraveller.model.Tour
 import vku.duongdlt.winktraveller.navigation.Route
 import vku.duongdlt.winktraveller.navigation.Screen
@@ -60,6 +70,7 @@ fun FullScreenDatePickerDialog(
         val datePickerState = rememberDatePickerState(
             initialSelectedDateMillis = initialSelectedDate?.toMillis(),
         )
+
         FullScreenDialog(onDismissRequest = onDismiss) {
 
             Column(
@@ -67,8 +78,9 @@ fun FullScreenDatePickerDialog(
                     .fillMaxSize()
                     .systemBarsPadding()
             ) {
+                
                 BookingHeader(routeState = routeState, tour = tour)
-                DatePickerDialog(open = openDialog, onDismiss = { /*TODO*/ }, onSelect = { /*TODO*/ })
+//                DatePickerDialog(open = openDialog, onSelect = { /*TODO*/ })
 //                DatePicker(
 //                    modifier = Modifier,
 //                    state = datePickerState,
@@ -77,21 +89,33 @@ fun FullScreenDatePickerDialog(
 //                    headline = null,
 //                    showModeToggle = false
 //                )
+                Row {
+                    TourSmallItem(tour = tour)
+                }
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    
+                    DateInput(
+                        label = "Check In",
+                        value = "22/11/2024",
+                        modifier = Modifier
+                            .weight(1f)
+                    )
+
+                    DateInput(
+                        label = "Check Out",
+                        value = "22/11/2024",
+                        modifier = Modifier
+                            .weight(1f)
+                    )
+                }
 
                 PeopleCountItem(title = "Adults", description = "2 Adults", value = value.value, onAction = { /*TODO*/ })
 
-                PrimaryButton(
-                    title = "Calender",
-                    paddingValues = PaddingValues(
-                        start = 25.dp,
-                        top = 36.dp,
-                        end = 25.dp,
-                        bottom = 36.dp,
-
-
-                        ),
-                    onClick = { openDialog.value = true }
-                )
+                
 
                 PrimaryButton(
                     title = "Continue",
@@ -104,7 +128,7 @@ fun FullScreenDatePickerDialog(
 
                     ),
                     onClick = {routeState.value = Route(
-                        screen = Screen.InforBookingScreen,
+                        screen = Screen.InforBookingScreen(tour),
                         prev = Screen.BookingScreen(tour)
                     )}
                 )
@@ -205,5 +229,58 @@ fun CountComponent(
                     .size(15.dp)
             )
         }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DateInput(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier,
+) {
+    var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
+    var openDialog by remember { mutableStateOf(false) }
+    val displayedDate = selectedDate ?: LocalDate.now()
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.Start
+    ) {
+        Row {
+
+                Text(
+                    text = label,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            Spacer(modifier = Modifier.width(100.dp))
+            Image(
+                painter = painterResource(id = R.drawable.ic_calendar),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable { openDialog = true }
+            )
+        }
+        if (openDialog) {
+            DatePickerDialog(
+                open = openDialog,
+                onDismiss = { openDialog = false },
+                onSelect = { date ->
+                    selectedDate = date
+                    openDialog = false
+                },
+                initialSelectedDate = selectedDate
+            )
+        }
+
+            TripitacaRoundedInputField(
+                value = displayedDate.toString(),
+                onValueChange = {},
+                modifier = Modifier.fillMaxWidth(),
+                readOnly = true
+            )
+
     }
 }

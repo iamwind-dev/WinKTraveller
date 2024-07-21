@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import vku.duongdlt.winktraveller.R
+import vku.duongdlt.winktraveller.ui.theme.HeliaTheme
 import vku.duongdlt.winktraveller.ui.theme.WinKTravellerTheme
 import vku.duongdlt.winktraveller.util.ImageItem
 
@@ -37,14 +38,14 @@ fun TitleWithViewAllItem(title: String, label: String, icon: Int) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp),
+            .padding(top = 36.dp,start = 22.dp, end = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = title,
             color = colorResource(id=R.color.textColor),
-            style = MaterialTheme.typography.titleLarge
+            style = HeliaTheme.typography.heading4
         )
         Row(
             modifier = Modifier.padding(top = 4.dp),
@@ -52,7 +53,7 @@ fun TitleWithViewAllItem(title: String, label: String, icon: Int) {
         ) {
             Text(
                 text = label,
-                color = colorResource(id=R.color.thirdTextColor),
+                color = colorResource(id=R.color.TextColor),
                 style = MaterialTheme.typography.labelSmall
             )
             Icon(
@@ -61,7 +62,7 @@ fun TitleWithViewAllItem(title: String, label: String, icon: Int) {
                     .padding(start = 8.dp),
                 painter = painterResource(id= icon),
                 contentDescription = null,
-                tint = colorResource(id=R.color.primaryColor)
+                tint = colorResource(id=R.color.TextColor)
             )
         }
     }
@@ -79,7 +80,7 @@ fun TitleWithReview(title: String, label: String, icon: Int) {
         Text(
             text = title,
             color = colorResource(id=R.color.textColor),
-            style = MaterialTheme.typography.titleLarge
+            style = HeliaTheme.typography.bodyLargeBold
         )
         Box(
             modifier = Modifier

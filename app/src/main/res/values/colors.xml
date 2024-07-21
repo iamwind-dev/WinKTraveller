@@ -10,6 +10,9 @@
     <color name="textColor">
         #2A2A2A
     </color>
+    <color name="TextColor">
+        #3656D1
+    </color>
     <color name="secondTextColor">
         #8D94A2
     </color>

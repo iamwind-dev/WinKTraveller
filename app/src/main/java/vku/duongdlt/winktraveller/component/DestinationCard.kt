@@ -33,6 +33,7 @@ import vku.duongdlt.winktraveller.util.ImageItem
 import vku.duongdlt.winktraveller.R
 import vku.duongdlt.winktraveller.model.Destination
 import vku.duongdlt.winktraveller.model.Tour
+import vku.duongdlt.winktraveller.ui.theme.HeliaTheme
 
 @Composable
 fun destinationSmallItem(
@@ -236,8 +237,8 @@ fun tourSmallItem(
             .shadow(
                 elevation = 4.dp,
                 shape = RoundedCornerShape(12.dp),
-                ambientColor = colorResource(id = R.color.primaryColor),
-                spotColor = colorResource(id = R.color.primaryColor)
+                ambientColor = colorResource(id = R.color.TextColor),
+                spotColor = colorResource(id = R.color.TextColor)
             ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(id=R.color.white)),
@@ -261,7 +262,7 @@ fun tourSmallItem(
                 Text(
                     text = tour.tour_name,
                     color = colorResource(id=R.color.textColor),
-                    style = MaterialTheme.typography.titleMedium
+                    style = HeliaTheme.typography.bodyLargeBold
                 )
                 Row(
                     modifier = Modifier.padding(top = 6.dp),
@@ -271,13 +272,13 @@ fun tourSmallItem(
                         modifier = Modifier.size(16.dp),
                         painter = painterResource(R.drawable.ci_location),
                         contentDescription = null,
-                        tint = colorResource(id=R.color.primaryColor)
+                        tint = colorResource(id=R.color.TextColor)
                     )
                     Text(
                         modifier = Modifier.padding(start = 8.dp),
                         text = tour.tour_location_name,
-                        color = colorResource(id=R.color.thirdTextColor),
-                        style = MaterialTheme.typography.headlineMedium
+                        color = colorResource(id=R.color.TextColor),
+                        style = HeliaTheme.typography.bodyLargeBold
                     )
                 }
 //                Text(
@@ -288,7 +289,7 @@ fun tourSmallItem(
 //                    overflow = TextOverflow.Ellipsis,
 //                    maxLines = 2
 //                )
-                HtmlText(text = tour.tour_description, maxLines = 2, fontSize = 14.sp)
+                HtmlText(text = tour.tour_description, style = HeliaTheme.typography.bodyLargeRegular,maxLines = 2, fontSize = 14.sp)
                 Row(
                     modifier = Modifier.padding(top = 9.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -395,6 +396,90 @@ fun tourLargeItem(
                     color = colorResource(id=R.color.white),
                     style = MaterialTheme.typography.bodySmall
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun TourSmallItem(
+    tour: Tour
+) {
+    Card(
+        modifier = Modifier
+            .padding(start = 16.dp, top = 12.dp, end = 16.dp)
+            .shadow(
+                elevation = 4.dp,
+                shape = RoundedCornerShape(12.dp),
+                ambientColor = colorResource(id = R.color.primaryColor),
+                spotColor = colorResource(id = R.color.primaryColor)
+            ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = colorResource(id=R.color.white)),
+        shape = RoundedCornerShape(12.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            ImageItem(
+                data = tour.url,
+                modifier = Modifier
+                    .width(95.dp)
+                    .height(84.dp),
+            )
+            Column(
+                modifier = Modifier.padding(start = 14.dp)
+            ) {
+                Text(
+                    text = tour.tour_name,
+                    color = colorResource(id=R.color.textColor),
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Row(
+                    modifier = Modifier.padding(top = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        modifier = Modifier.size(16.dp),
+                        painter = painterResource(R.drawable.ci_location),
+                        contentDescription = null,
+                        tint = colorResource(id=R.color.primaryColor)
+                    )
+                    Text(
+                        modifier = Modifier.padding(start = 8.dp),
+                        text = tour.tour_location_name,
+                        color = colorResource(id=R.color.thirdTextColor),
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                }
+//                Text(
+//                    modifier = Modifier.padding(top = 6.dp),
+//                    text = tour.tour_description,
+//                    color = colorResource(id=R.color.secondTextColor),
+//                    style = MaterialTheme.typography.bodySmall,
+//                    overflow = TextOverflow.Ellipsis,
+//                    maxLines = 2
+//                )
+                HtmlText(text = tour.tour_description, maxLines = 2, fontSize = 14.sp)
+                Row(
+                    modifier = Modifier.padding(top = 9.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = tour.tour_price.toString(),
+                        color = colorResource(id=R.color.textColor),
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                    Text(
+                        modifier = Modifier.padding(start = 4.dp),
+                        text = "/${tour.tour_duration}",
+                        color = colorResource(id=R.color.secondTextColor),
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
             }
         }
     }

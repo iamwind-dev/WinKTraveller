@@ -17,7 +17,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,17 +36,19 @@ import com.seiko.imageloader.model.ImageRequest
 import com.seiko.imageloader.model.ImageResult
 import com.seiko.imageloader.rememberImageAction
 import com.seiko.imageloader.rememberImageActionPainter
+import vku.duongdlt.winktraveller.component.LoadingDialog
+import vku.duongdlt.winktraveller.ui.theme.HeliaTheme
 
 val BOTTOM_NAV_SPACE = 90.dp
-
 @Composable
 fun ImageItem(
     data: Any,
     playAnime: Boolean = true,
     corner: Dp = 10.dp,
     modifier: Modifier = Modifier,
-
 ) {
+    var isLoading by remember { mutableStateOf(true) }
+
     Box(contentAlignment = Alignment.Center) {
         val brightness = -50f
         val colorMatrix = floatArrayOf(
@@ -62,33 +66,21 @@ fun ImageItem(
                 }
             }
         }
+
         val action by rememberImageAction(request)
         val painter = rememberImageActionPainter(action)
-        println("Image -> $data")
+
         when (val current = action) {
-            is ImageEvent.StartWithDisk -> {
-                println("ImageEvent.StartWithDisk -> called")
-            }
-
-            is ImageEvent.StartWithFetch -> {
-                println("ImageEvent.StartWithFetch -> called")
-            }
-
+            is ImageEvent.StartWithDisk,
+            is ImageEvent.StartWithFetch,
             is ImageEvent.StartWithMemory -> {
-                println("ImageEvent.StartWithMemory -> called")
-                CircularProgressIndicator()
+                isLoading = true
             }
-
             is ImageEvent.Progress -> {
-                println("ImageEvent.Progress -> ${current.progress}")
+                // Show progress indicator if needed
             }
-
-            is ImageResult.Source -> {
-                println("ImageResult.Source -> called")
-            }
-
             is ImageResult.Bitmap -> {
-                println("ImageResult.Bitmap -> called")
+                isLoading = false
                 Image(
                     bitmap = current.bitmap.asImageBitmap(),
                     contentDescription = null,
@@ -99,25 +91,25 @@ fun ImageItem(
                     colorFilter = ColorFilter.colorMatrix(ColorMatrix(colorMatrix))
                 )
             }
-
-            is ImageResult.Image -> {
-                println("ImageResult.Image -> called")
-            }
-
-            is ImageResult.Painter -> {
-                println("ImageResult.Painter -> called")
-            }
-
             is ImageResult.Error -> {
-                println("ImageResult.Error -> " + current.error.message)
+                isLoading = false
+                // Show error message if needed
             }
-
             else -> {
-                println("None")
+                isLoading = false
             }
+        }
+
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = HeliaTheme.colors.primary500
+            )
         }
     }
 }
+
+
 
 @Composable
 fun AnimateVisibility(

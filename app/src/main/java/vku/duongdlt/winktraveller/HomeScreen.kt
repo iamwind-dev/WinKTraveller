@@ -1,6 +1,8 @@
 package vku.duongdlt.winktraveller
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import vku.duongdlt.winktraveller.ViewModel.LocationViewModel
@@ -41,6 +44,7 @@ import vku.duongdlt.winktraveller.model.Destination
 import vku.duongdlt.winktraveller.model.Location
 import vku.duongdlt.winktraveller.model.Tour
 import vku.duongdlt.winktraveller.navigation.Screen
+import vku.duongdlt.winktraveller.ui.theme.HeliaTheme
 
 enum class HomeScreenContents{
     HEADER_SECTION,
@@ -83,12 +87,25 @@ fun HomeScreen(
         val tours = remember { mutableStateOf<List<Tour>>(emptyList()) }
         VerticalScrollLayout(
             modifier = Modifier.fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.background)
-                .padding(top=31.dp),
+                .background(color = MaterialTheme.colorScheme.background),
             ChildLayout(
                 contentType = HomeScreenContents.HEADER_SECTION.name,
                 content = {
                     homeHeader()
+                }
+            ),
+            ChildLayout(
+                content = {
+                    Column(
+                        modifier = Modifier, verticalArrangement = Arrangement.spacedBy(24.dp)
+                    ) {
+                        Greeting(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            name = "Duong"
+                        )
+                    }
                 }
             ),
             ChildLayout(
@@ -145,4 +162,18 @@ fun HomeScreen(
             )
         )
     }
+}
+
+
+@Composable
+private fun Greeting(
+    name: String?, modifier: Modifier = Modifier
+) {
+
+    Text(
+        modifier = modifier,
+        text = "Hello, Duong 👋 ",
+        style = HeliaTheme.typography.heading3,
+        color = if (HeliaTheme.theme.isDark) HeliaTheme.colors.white else HeliaTheme.colors.greyscale900
+    )
 }

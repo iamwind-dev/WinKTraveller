@@ -5,6 +5,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -29,6 +31,7 @@ import vku.duongdlt.winktraveller.navigation.Route
 import vku.duongdlt.winktraveller.R
 import vku.duongdlt.winktraveller.model.MenuItem
 import vku.duongdlt.winktraveller.navigation.Screen
+import vku.duongdlt.winktraveller.component.PrimaryButton as PrimaryButton1
 
 val menuItems = arrayListOf<MenuItem>().apply {
     add(MenuItem(Menu.HOME, "Home", R.drawable.menu_home, Screen.HomeScreen))
@@ -58,7 +61,7 @@ private fun BottomMenuItem(
             modifier = Modifier.size(34.dp).clickable { onItemClicked.invoke(menuItem) },
             painter = painterResource(id=menuItem.icon),
             contentDescription = menuItem.title,
-            tint = colorResource(id=if (route.value.screen == menuItem.screen) R.color.primaryColor else R.color.secondTextColor)
+            tint = colorResource(id=if (route.value.screen == menuItem.screen) R.color.TextColor else R.color.secondTextColor)
         )
         AnimateVisibility(
             visible = route.value.screen == menuItem.screen,
@@ -69,9 +72,9 @@ private fun BottomMenuItem(
                 modifier = Modifier
                     .width(22.dp)
                     .padding(top = 4.dp)
-                    .background(color = colorResource(R.color.primaryColor), shape = RoundedCornerShape(16.dp)),
+                    .background(color = colorResource(R.color.TextColor), shape = RoundedCornerShape(16.dp)),
                 thickness = 4.dp,
-                color = colorResource(R.color.primaryColor)
+                color = colorResource(R.color.TextColor)
             )
         }
     }
@@ -103,6 +106,41 @@ fun BottomMenuBar(
                         onItemClicked.invoke(it)
                     }
                 }
+            )
+        }
+    }
+}
+
+@Composable
+fun BottomButtonBar(
+    modifier: Modifier = Modifier,
+    route: MutableState<Route>,
+    onItemClicked: (MenuItem) -> Unit,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(
+                color = colorResource(R.color.white),
+                shape = RoundedCornerShape(size = 0.dp)
+            ),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 18.dp, horizontal = 40.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            PrimaryButton1(
+                title = "Book Now",
+                paddingValues = PaddingValues(
+                    start = 25.dp,
+                    top = 36.dp,
+                    end = 25.dp,
+                    bottom = 36.dp
+                ),
+                onClick = {route.value = Route(
+                    screen = Screen.HomeScreen,
+                    prev = Screen.HomeScreen
+                )}
             )
         }
     }

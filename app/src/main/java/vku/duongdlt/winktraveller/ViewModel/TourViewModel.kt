@@ -5,6 +5,8 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.tasks.await
 import vku.duongdlt.winktraveller.model.Location
 import vku.duongdlt.winktraveller.model.Tour
 
@@ -29,5 +31,23 @@ class TourViewModel(): ViewModel() {
                 listTour(emptyList())
             }
         })
+    }
+
+    suspend fun getImagesFromFirebase(folder: String): List<String> {
+        val storage = FirebaseStorage.getInstance()
+        val storageRef = storage.reference.child(folder)
+        val images = mutableListOf<String>()
+
+        try {
+            val result = storageRef.listAll().await()
+            for (fileRef in result.items) {
+                val url = fileRef.downloadUrl.await().toString()
+                images.add(url)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return images
     }
 }

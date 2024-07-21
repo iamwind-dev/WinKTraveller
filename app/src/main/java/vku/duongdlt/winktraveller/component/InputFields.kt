@@ -48,7 +48,7 @@ object InputFieldDefaults {
     fun placeholderColor() = HeliaTheme.colors.greyscale500
 
     @Composable
-    fun focusedBorderColor() = HeliaTheme.colors.primary500
+    fun focusedBorderColor() = HeliaTheme.colors.indigo
 
     @Composable
     fun unfocusedBorderColor() = Color.Transparent
@@ -115,7 +115,7 @@ fun InputField(
         unfocusedPlaceholderColor = InputFieldDefaults.placeholderColor(),
         focusedPlaceholderColor = InputFieldDefaults.placeholderColor(),
         focusedBorderColor = InputFieldDefaults.focusedBorderColor(),
-        unfocusedBorderColor = InputFieldDefaults.unfocusedBorderColor(),
+        unfocusedBorderColor = InputFieldDefaults.focusedBorderColor(),
         focusedContainerColor = InputFieldDefaults.focusedContainerColor(),
         // Passing an unfocused container color in this way cases some blinking in the transition
         // between focused and unfocused states.

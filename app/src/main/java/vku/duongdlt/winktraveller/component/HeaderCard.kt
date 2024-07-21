@@ -2,6 +2,7 @@ package vku.duongdlt.winktraveller.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,6 +36,7 @@ import vku.duongdlt.winktraveller.data.FakeFavorites
 import vku.duongdlt.winktraveller.model.Destination
 import vku.duongdlt.winktraveller.model.Tour
 import vku.duongdlt.winktraveller.navigation.Screen
+import vku.duongdlt.winktraveller.ui.theme.HeliaTheme
 import vku.duongdlt.winktraveller.ui.theme.WinKTravellerTheme
 
 @Composable
@@ -42,45 +44,54 @@ fun homeHeader(){
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(top=16.dp, start = 16.dp, end = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ){
         Image(modifier = Modifier
-            .size(25.dp)
+            .size(150.dp)
             .padding(start = 4.dp),
-            painter = painterResource(id = R.drawable.search_icon),
+            painter = painterResource(id = R.drawable.logo1),
             contentDescription = null
         )
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Current Location",
-                color = Color.Black,
-                style = MaterialTheme.typography.titleSmall
-            )
-            Row(
-                modifier = Modifier.padding(top = 1.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ){
-                Icon(
-                    modifier = Modifier.size(30.dp),
-                    painter = painterResource(R.drawable.ci_location),
-                    contentDescription = null,
-                  tint = colorResource(id = R.color.primaryColor)
-                )
-                val items = listOf("Option 1", "Option 2", "Option 3")
-                MyDropdownMenu(list = items) {
-
-                }
-
-
-            }
-        }
+//            Text(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(horizontal = 24.dp)
+//                    .padding(top = 24.dp),
+//                text = "WinKTraveller",
+//                color = Color.Black,
+//                style = HeliaTheme.typography.heading3
+//            )
+//        Column(
+//            horizontalAlignment = Alignment.CenterHorizontally
+//        ) {
+//            Text(
+//                text = "Current Location",
+//                color = Color.Black,
+//                style = MaterialTheme.typography.titleSmall
+//            )
+//            Row(
+//                modifier = Modifier.padding(top = 1.dp),
+//                verticalAlignment = Alignment.CenterVertically,
+//            ){
+//                Icon(
+//                    modifier = Modifier.size(30.dp),
+//                    painter = painterResource(R.drawable.ci_location),
+//                    contentDescription = null,
+//                  tint = colorResource(id = R.color.primaryColor)
+//                )
+//                val items = listOf("Option 1", "Option 2", "Option 3")
+//                MyDropdownMenu(list = items) {
+//
+//                }
+//
+//
+//            }
+//        }
         Image(
-            modifier = Modifier.size(36.dp),
-            painter = painterResource(id = R.drawable.profile_icon),
+            modifier = Modifier.size(30.dp),
+            painter = painterResource(id = R.drawable.ic_search),
             contentDescription = null
         )
     }

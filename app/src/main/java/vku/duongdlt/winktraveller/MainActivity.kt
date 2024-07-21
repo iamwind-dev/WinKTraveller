@@ -23,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import vku.duongdlt.winktraveller.ViewModel.LocationViewModel
 import vku.duongdlt.winktraveller.ViewModel.TourViewModel
 import vku.duongdlt.winktraveller.ViewModel.UserViewModel
+import vku.duongdlt.winktraveller.component.BottomButtonBar
 
 import vku.duongdlt.winktraveller.util.AnimateVisibility
 import vku.duongdlt.winktraveller.navigation.Route
@@ -37,6 +38,7 @@ class MainActivity : ComponentActivity() {
     private val locationViewModel: LocationViewModel by viewModels()
     private val userViewModel: UserViewModel by viewModels()
     private val tourViewModel: TourViewModel by viewModels()
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,10 +71,11 @@ fun WinKUIMain(
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
+            val state = routeState.value.screen
 //        val navController = rememberNavController()
 //     val navBackStackEntry by navController.currentBackStackEntryAsState()
 //   Navigation(navController)
-            when (val state = routeState.value.screen) {
+            when (state) {
                 is Screen.LoginScreen -> {
                     visible = true
                     LoginScreen(routeState = routeState,userViewModel = userViewModel)
@@ -108,7 +111,8 @@ fun WinKUIMain(
                     visible = false
                     DetailScreen(
                         routeState = routeState,
-                        tour = state.tour
+                        tour = state.tour,
+                        tourviewModel = tourViewModel
                     )
                 }
 
@@ -134,9 +138,14 @@ fun WinKUIMain(
                 is Screen.DetailScreen -> TODO()
                 is Screen.InforBookingScreen -> {
                     visible = false
-                    InforBookingScreen(routeState = routeState)
+                    InforBookingScreen(routeState = routeState,tour = state.tour)
                 }
             }
+//            if (routeState.value.screen !is Screen.LoginScreen && routeState.value.screen !is Screen.SignUpScreen && routeState.value.screen !is Screen.HomeScreen){
+//                BottomButtonBar(route = routeState) {
+//
+//                }
+//            }
             if (routeState.value.screen != Screen.LoginScreen && routeState.value.screen != Screen.SignUpScreen) {
                 AnimateVisibility(
                     visible = visible,

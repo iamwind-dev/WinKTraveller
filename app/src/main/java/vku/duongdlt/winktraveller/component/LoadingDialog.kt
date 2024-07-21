@@ -6,9 +6,13 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import dev.icerock.moko.resources.ColorResource
+import vku.duongdlt.winktraveller.R
 import vku.duongdlt.winktraveller.ui.theme.HeliaTheme
 
 @Composable
@@ -26,7 +30,7 @@ fun LoadingDialog(
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator(
-                        color = HeliaTheme.colors.primary500
+                        color = Color.Blue
                     )
                 }
             }
