@@ -34,6 +34,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import vku.duongdlt.winktraveller.component.HtmlText
+
 
 import vku.duongdlt.winktraveller.navigation.Route
 import vku.duongdlt.winktraveller.component.PrimaryButton
@@ -47,7 +50,7 @@ import vku.duongdlt.winktraveller.util.ImageItem
 
 @Composable
 fun DetailScreen(routeState: MutableState<Route>, tour: Tour) {
-    val rememberTour = remember { mutableStateOf(tour.tour_image_url) }
+    val rememberTour = remember { mutableStateOf(tour.url) }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -62,7 +65,7 @@ fun DetailScreen(routeState: MutableState<Route>, tour: Tour) {
             "Book Now",
             PaddingValues(start = 25.dp, top = 36.dp, end = 25.dp, bottom = 36.dp),
             onClick = {routeState.value = Route(
-                screen = Screen.BookingScreen,
+                screen = Screen.BookingScreen(tour),
                 prev = Screen.DetailScreen(tour)
             )}
         )
@@ -137,14 +140,16 @@ fun contentSection(tour: Tour, onImageClicked: (String) -> Unit) {
             }
         }
 
-        Text(
-            modifier = Modifier.padding(start = 25.dp, top = 18.dp, end = 25.dp),
-            text = tour.tour_description,
-            color = colorResource(id=R.color.secondTextColor),
-            style = MaterialTheme.typography.bodyLarge,
-            overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.Justify
-        )
+        HtmlText(text = tour.tour_description,modifier = Modifier.padding(start = 25.dp, top = 18.dp, end = 25.dp),fontSize = 20.sp, )
+
+//        Text(
+//            modifier = Modifier.padding(start = 25.dp, top = 18.dp, end = 25.dp),
+//            text = tour.tour_description,
+//            color = colorResource(id=R.color.secondTextColor),
+//            style = MaterialTheme.typography.bodyLarge,
+//            overflow = TextOverflow.Ellipsis,
+//            textAlign = TextAlign.Justify
+//        )
 
         TitleWithReview("Preview", "4.8", R.drawable.star)
 

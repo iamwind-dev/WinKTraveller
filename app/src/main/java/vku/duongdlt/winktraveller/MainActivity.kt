@@ -112,12 +112,13 @@ fun WinKUIMain(
                     )
                 }
 
-                Screen.BookingScreen -> {
+                is Screen.BookingScreen -> {
                     visible = false
                     BookingScreen(
                         routeState = routeState,
                         onEvent = { /*TODO*/ },
-                        onNavigateBack = { /*TODO*/ }
+                        onNavigateBack = { /*TODO*/ },
+                        tour = state.tour
                     )
                 }
                 Screen.FirstScreen -> {
@@ -131,6 +132,10 @@ fun WinKUIMain(
                 }
 
                 is Screen.DetailScreen -> TODO()
+                is Screen.InforBookingScreen -> {
+                    visible = false
+                    InforBookingScreen(routeState = routeState)
+                }
             }
             if (routeState.value.screen != Screen.LoginScreen && routeState.value.screen != Screen.SignUpScreen) {
                 AnimateVisibility(

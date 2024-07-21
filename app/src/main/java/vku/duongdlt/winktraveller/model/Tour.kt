@@ -12,7 +12,7 @@ data class Tour(
     val tour_includes:String="",
     val tour_introduction:String="",
     val tour_journey:String="",
-    val tour_location_id:Int=0,
+    val tour_location_id:String="",
     val tour_location_name:String="",
     val tour_max_capacity:Int=0,
     val tour_name:String="",
@@ -24,7 +24,8 @@ data class Tour(
     val tour_start_date:String="",
     val tour_starting_point:String="",
     val tour_status:String="",
-    val tour_status_id:Int=0,
+    val tour_status_id:String="",
     val tour_total_view:Int=0,
-    val tour_vehicle:String=""
+    val tour_vehicle:String="",
+    val url:String=""
 )

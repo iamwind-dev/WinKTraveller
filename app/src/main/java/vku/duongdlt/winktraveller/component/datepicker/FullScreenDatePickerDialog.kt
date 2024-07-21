@@ -15,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Remove
-import androidx.compose.material3.DatePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,6 +23,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -34,7 +35,9 @@ import vku.duongdlt.winktraveller.R
 import vku.duongdlt.winktraveller.component.BookingHeader
 import vku.duongdlt.winktraveller.component.FullScreenDialog
 import vku.duongdlt.winktraveller.component.PrimaryButton
+import vku.duongdlt.winktraveller.model.Tour
 import vku.duongdlt.winktraveller.navigation.Route
+import vku.duongdlt.winktraveller.navigation.Screen
 import vku.duongdlt.winktraveller.util.toMillis
 import java.time.LocalDate
 
@@ -46,8 +49,13 @@ fun FullScreenDatePickerDialog(
     onDismiss: () -> Unit,
     onSelect: (date: LocalDate) -> Unit,
     initialSelectedDate: LocalDate? = null,
-    routeState: MutableState<Route>
+    routeState: MutableState<Route>,
+    tour : Tour
 ) {
+    val openDialog = remember { mutableStateOf(false) }
+
+    val value = remember { mutableStateOf(1) }
+
     if (open) {
         val datePickerState = rememberDatePickerState(
             initialSelectedDateMillis = initialSelectedDate?.toMillis(),
@@ -59,17 +67,31 @@ fun FullScreenDatePickerDialog(
                     .fillMaxSize()
                     .systemBarsPadding()
             ) {
-                BookingHeader(routeState = routeState)
-                DatePicker(
-                    modifier = Modifier,
-                    state = datePickerState,
-                    colors = HeliaDatePickerDefaults.colors(),
-                    title = null,
-                    headline = null,
-                    showModeToggle = false
-                )
+                BookingHeader(routeState = routeState, tour = tour)
+                DatePickerDialog(open = openDialog, onDismiss = { /*TODO*/ }, onSelect = { /*TODO*/ })
+//                DatePicker(
+//                    modifier = Modifier,
+//                    state = datePickerState,
+//                    colors = HeliaDatePickerDefaults.colors(),
+//                    title = null,
+//                    headline = null,
+//                    showModeToggle = false
+//                )
 
-                PeopleCountItem(title = "Adults", description = "2 Adults", value = 1, onAction = { /*TODO*/ })
+                PeopleCountItem(title = "Adults", description = "2 Adults", value = value.value, onAction = { /*TODO*/ })
+
+                PrimaryButton(
+                    title = "Calender",
+                    paddingValues = PaddingValues(
+                        start = 25.dp,
+                        top = 36.dp,
+                        end = 25.dp,
+                        bottom = 36.dp,
+
+
+                        ),
+                    onClick = { openDialog.value = true }
+                )
 
                 PrimaryButton(
                     title = "Continue",
@@ -77,11 +99,15 @@ fun FullScreenDatePickerDialog(
                         start = 25.dp,
                         top = 36.dp,
                         end = 25.dp,
-                        bottom = 36.dp
-                    )
-                ) {
+                        bottom = 36.dp,
 
-                }
+
+                    ),
+                    onClick = {routeState.value = Route(
+                        screen = Screen.InforBookingScreen,
+                        prev = Screen.BookingScreen(tour)
+                    )}
+                )
             }
         }
 
@@ -97,6 +123,7 @@ private fun PeopleCountItem(
     onAction: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val value1 = remember { mutableStateOf(1) }
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
@@ -113,13 +140,13 @@ private fun PeopleCountItem(
             )
             Text(
                 modifier = Modifier.padding(start = 40.dp),
-                text = description,
+                text = value1.value.toString()+" Adults",
                 fontSize = 12.sp
             )
         }
         CountComponent(
             value = value,
-            onAction = onAction,
+            onAction = {   if(value1.value > 0) value1.value--   },
             modifier = Modifier.padding(end = 16.dp)
         )
     }
@@ -131,6 +158,7 @@ fun CountComponent(
     onAction: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val value = remember { mutableStateOf(1) }
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -144,7 +172,7 @@ fun CountComponent(
                     shape = RoundedCornerShape(100)
                 )
                 .size(25.dp),
-            onClick = { onAction() }
+            onClick = { if(value.value > 0) value.value-- }
         ) {
             Icon(
                 imageVector = Icons.Rounded.Remove,
@@ -154,7 +182,7 @@ fun CountComponent(
             )
         }
         Text(
-            text = value.toString(),
+            text = value.value.toString(),
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier
                 .padding(horizontal = 10.dp)
@@ -168,7 +196,7 @@ fun CountComponent(
                     shape = RoundedCornerShape(100)
                 )
                 .size(25.dp),
-            onClick = { onAction() }
+            onClick = { value.value++ }
         ) {
             Icon(
                 imageVector = Icons.Rounded.Add,

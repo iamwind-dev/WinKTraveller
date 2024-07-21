@@ -87,7 +87,7 @@ fun homeHeader(){
 }
 
 @Composable
-fun BookingHeader(routeState: MutableState<Route>) {
+fun BookingHeader(routeState: MutableState<Route>,tour: Tour) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -99,9 +99,7 @@ fun BookingHeader(routeState: MutableState<Route>) {
             .size(25.dp)
             .padding(start = 4.dp)
             .clickable {
-                routeState.value = routeState.value.copy(
-                    screen = routeState.value.prev ?: routeState.value.screen
-                )
+                routeState.value = Route(screen = Screen.DetailScreen(tour))
             },
             painter = painterResource(id = R.drawable.back_icon),
             contentDescription = null

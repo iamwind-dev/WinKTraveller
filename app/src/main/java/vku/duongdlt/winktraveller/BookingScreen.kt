@@ -49,6 +49,7 @@ import vku.duongdlt.winktraveller.component.TripitacaTopAppBar
 import vku.duongdlt.winktraveller.component.datepicker.DatePickerDialog
 import vku.duongdlt.winktraveller.component.datepicker.FullScreenDatePickerDialog
 import vku.duongdlt.winktraveller.model.CountAction
+import vku.duongdlt.winktraveller.model.Tour
 import vku.duongdlt.winktraveller.navigation.Route
 import vku.duongdlt.winktraveller.ui.theme.WinKTravellerTheme
 import vku.duongdlt.winktraveller.util.DateUtils.formatDate
@@ -62,9 +63,9 @@ fun BookingScreen(
 routeState: MutableState<Route>,
     onEvent: () -> Unit,
     onNavigateBack: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,tour: Tour
 ) {
-    FullScreenDatePickerDialog(open = true, onDismiss = { /*TODO*/ }, onSelect = {}, routeState = routeState)
+    FullScreenDatePickerDialog(open = true, onDismiss = { /*TODO*/ }, onSelect = {}, routeState = routeState, tour = tour)
 
 }
 

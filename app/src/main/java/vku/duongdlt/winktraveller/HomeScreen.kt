@@ -76,7 +76,7 @@ fun HomeScreen(
     }
 
     listTour.forEach { tour ->
-        list2.add(Tour(tour.id, tour.tour_create_date, tour.tour_description, tour.tour_duration, tour.tour_edit_date, tour.tour_end_date, tour.tour_highlights, tour.tour_image_url, tour.tour_includes, tour.tour_introduction, tour.tour_journey, tour.tour_location_id, tour.tour_location_name, tour.tour_max_capacity, tour.tour_name, tour.tour_number_of_rating, tour.tour_price, tour.tour_registration, tour.tour_schedule, tour.tour_star, tour.tour_start_date, tour.tour_starting_point, tour.tour_status, tour.tour_status_id, tour.tour_total_view, tour.tour_vehicle))
+        list2.add(Tour(tour.id, tour.tour_create_date, tour.tour_description, tour.tour_duration, tour.tour_edit_date, tour.tour_end_date, tour.tour_highlights, tour.tour_image_url, tour.tour_includes, tour.tour_introduction, tour.tour_journey, tour.tour_location_id, tour.tour_location_name, tour.tour_max_capacity, tour.tour_name, tour.tour_number_of_rating, tour.tour_price, tour.tour_registration, tour.tour_schedule, tour.tour_star, tour.tour_start_date, tour.tour_starting_point, tour.tour_status, tour.tour_status_id, tour.tour_total_view, tour.tour_vehicle, tour.url))
     }
 
     Surface(modifier = Modifier.fillMaxWidth().padding(bottom = BOTTOM_NAV_SPACE)) {
@@ -102,11 +102,13 @@ fun HomeScreen(
                 content = {
 
                     loadLocationItems(list) {
-                        location ->
-                        when(location.id)  {
-                            0 -> tours.value = list2
-                            else -> tours.value = list2.filter { it.tour_location_id == location.id }
-                        }
+//                        location ->
+//                        when(location.id)  {
+//                            0 -> tours.value = list2
+//                            else -> tours.value = list2.filter {
+//                                it.tour_location_id == location.id
+//                            }
+//                        }
                     }
                 }
             ),

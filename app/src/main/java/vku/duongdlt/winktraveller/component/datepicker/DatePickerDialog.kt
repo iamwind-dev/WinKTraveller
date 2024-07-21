@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
@@ -33,12 +34,12 @@ import java.time.LocalDate
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerDialog(
-    open: Boolean,
+    open: MutableState<Boolean>,
     onDismiss: () -> Unit,
-    onSelect: () -> Unit,
+    onSelect: (date: LocalDate) -> Unit,
     initialSelectedDate: LocalDate? = null
 ) {
-    if (open) {
+    if (open.value) {
         val datePickerState = rememberDatePickerState(
             initialSelectedDateMillis = initialSelectedDate?.toMillis(),
         )
@@ -69,13 +70,13 @@ fun DatePickerDialog(
                                 .padding(16.dp),
                             horizontalArrangement = Arrangement.Center
                         ) {
-                            CancelButton(onClick = { onDismiss() })
+                            CancelButton(onClick = { open.value = false})
                             Spacer(modifier = Modifier.width(32.dp))
                             ConfirmButton(
                                 enabled = datePickerState.selectedDateMillis != null,
                                 onClick = {
                                     datePickerState.selectedDateMillis?.let { millis ->
-                                        onSelect()
+                                        onSelect(millis.toLocalDate())
                                     }
                                 }
                             )

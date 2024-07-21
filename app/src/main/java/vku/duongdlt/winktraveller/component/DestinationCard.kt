@@ -28,6 +28,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import vku.duongdlt.winktraveller.util.ImageItem
 import vku.duongdlt.winktraveller.R
 import vku.duongdlt.winktraveller.model.Destination
@@ -40,13 +41,13 @@ fun destinationSmallItem(
 ) {
     Card(
         modifier = Modifier
-            .padding(start = 16.dp , top = 12.dp, end = 16.dp)
+            .padding(start = 16.dp, top = 12.dp, end = 16.dp)
             .clickable { onItemClicked.invoke(destination) }
             .shadow(
                 elevation = 4.dp,
                 shape = RoundedCornerShape(12.dp),
-                ambientColor = colorResource(id=R.color.primaryColor),
-                spotColor = colorResource(id=R.color.primaryColor)
+                ambientColor = colorResource(id = R.color.primaryColor),
+                spotColor = colorResource(id = R.color.primaryColor)
             ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(id=R.color.white)),
@@ -60,7 +61,9 @@ fun destinationSmallItem(
         ) {
             ImageItem(
                 data = destination.thumbnail,
-                modifier = Modifier.width(95.dp).height(84.dp),
+                modifier = Modifier
+                    .width(95.dp)
+                    .height(84.dp),
             )
             Column(
                 modifier = Modifier.padding(start = 14.dp)
@@ -130,7 +133,7 @@ fun destinationLargeItem(
             .padding(start = 16.dp)
             .clickable { onItemClicked.invoke(destination) }
             .background(
-                color = colorResource(id=R.color.categoryBgColor),
+                color = colorResource(id = R.color.categoryBgColor),
                 shape = RoundedCornerShape(10.dp)
             ),
         contentAlignment = Alignment.BottomStart
@@ -138,7 +141,9 @@ fun destinationLargeItem(
         ImageItem(destination.thumbnail)
 
         Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 14.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -226,13 +231,13 @@ fun tourSmallItem(
 ) {
     Card(
         modifier = Modifier
-            .padding(start = 16.dp , top = 12.dp, end = 16.dp)
+            .padding(start = 16.dp, top = 12.dp, end = 16.dp)
             .clickable { onItemClicked.invoke(tour) }
             .shadow(
                 elevation = 4.dp,
                 shape = RoundedCornerShape(12.dp),
-                ambientColor = colorResource(id=R.color.primaryColor),
-                spotColor = colorResource(id=R.color.primaryColor)
+                ambientColor = colorResource(id = R.color.primaryColor),
+                spotColor = colorResource(id = R.color.primaryColor)
             ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(id=R.color.white)),
@@ -245,8 +250,10 @@ fun tourSmallItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             ImageItem(
-                data = tour.tour_image_url,
-                modifier = Modifier.width(95.dp).height(84.dp),
+                data = tour.url,
+                modifier = Modifier
+                    .width(95.dp)
+                    .height(84.dp),
             )
             Column(
                 modifier = Modifier.padding(start = 14.dp)
@@ -273,14 +280,15 @@ fun tourSmallItem(
                         style = MaterialTheme.typography.headlineMedium
                     )
                 }
-                Text(
-                    modifier = Modifier.padding(top = 6.dp),
-                    text = tour.tour_description,
-                    color = colorResource(id=R.color.secondTextColor),
-                    style = MaterialTheme.typography.bodySmall,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 2
-                )
+//                Text(
+//                    modifier = Modifier.padding(top = 6.dp),
+//                    text = tour.tour_description,
+//                    color = colorResource(id=R.color.secondTextColor),
+//                    style = MaterialTheme.typography.bodySmall,
+//                    overflow = TextOverflow.Ellipsis,
+//                    maxLines = 2
+//                )
+                HtmlText(text = tour.tour_description, maxLines = 2, fontSize = 14.sp)
                 Row(
                     modifier = Modifier.padding(top = 9.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -335,15 +343,17 @@ fun tourLargeItem(
             .padding(start = 16.dp)
             .clickable { onItemClicked.invoke(tour) }
             .background(
-                color = colorResource(id=R.color.categoryBgColor),
+                color = colorResource(id = R.color.categoryBgColor),
                 shape = RoundedCornerShape(10.dp)
             ),
         contentAlignment = Alignment.BottomStart
     ) {
-        ImageItem(tour.tour_image_url)
+        ImageItem(tour.url)
 
         Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 14.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {

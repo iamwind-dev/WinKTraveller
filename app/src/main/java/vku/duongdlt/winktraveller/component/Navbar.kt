@@ -2,9 +2,11 @@ package vku.duongdlt.winktraveller.component
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -58,10 +60,11 @@ fun Navbar(
     modifier: Modifier = Modifier
 //    actions: @Composable RowScope.() -> Unit
 ) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 30.dp)) {
+        Row(
+            modifier = modifier,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
 //        IconButton(
 //            onClick = onNavigateClick
 //        ) {
@@ -71,19 +74,20 @@ fun Navbar(
                 tint = if (HeliaTheme.theme.isDark) HeliaTheme.colors.white else HeliaTheme.colors.greyscale900
             )
 //        }
-        Text(
-            text = title,
-            style = HeliaTheme.typography.heading4,
-            color = if (HeliaTheme.theme.isDark) HeliaTheme.colors.white else HeliaTheme.colors.greyscale900,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-        Spacer(modifier = Modifier.width(12.dp))
-        Row(
-            modifier = Modifier.weight(1f),
-            horizontalArrangement = Arrangement.End
-        ) {
+            Text(
+                text = title,
+                style = HeliaTheme.typography.heading4,
+                color = if (HeliaTheme.theme.isDark) HeliaTheme.colors.white else HeliaTheme.colors.greyscale900,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Row(
+                modifier = Modifier.weight(1f),
+                horizontalArrangement = Arrangement.End
+            ) {
 //            actions()
+            }
         }
     }
 }
