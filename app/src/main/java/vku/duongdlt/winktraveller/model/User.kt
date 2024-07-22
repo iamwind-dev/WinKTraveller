@@ -1,7 +1,7 @@
 package vku.duongdlt.winktraveller.model
 
 data class User (
-    val id: Int = 0,
+    val id: String="",
     val role_id: Int = 0,
     val user_address: String = "",
     val user_avatar: String = "",

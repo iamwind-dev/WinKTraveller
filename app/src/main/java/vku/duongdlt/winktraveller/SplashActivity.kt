@@ -45,7 +45,7 @@ class SplashActivity : ComponentActivity() {
 
 
 @Composable
-fun SplashScreen(modifier: Modifier = Modifier){
+fun SplashScreen(){
     val customFontFamily = FontFamily(
         Font(R.font.custom, FontWeight.Normal) // Thay thế custom_font bằng tên file thực tế
     )

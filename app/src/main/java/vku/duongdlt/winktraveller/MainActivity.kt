@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.auth.FirebaseAuth
 import vku.duongdlt.winktraveller.ViewModel.LocationViewModel
 import vku.duongdlt.winktraveller.ViewModel.TourViewModel
 import vku.duongdlt.winktraveller.ViewModel.UserViewModel
@@ -67,7 +69,21 @@ fun WinKUIMain(
 //        Navigation(navController)
 //    }
         var visible by remember { mutableStateOf(true) }
-        val routeState = remember { mutableStateOf(Route(Screen.HomeScreen)) }
+
+        // Khởi tạo routeState với giá trị mặc định
+        val routeState = remember { mutableStateOf(Route(Screen.SplashScreen)) }
+        val auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
+
+        // Cập nhật routeState dựa trên trạng thái đăng nhập của người dùng
+        LaunchedEffect(currentUser) {
+            if (currentUser != null) {
+                routeState.value = Route(Screen.HomeScreen) // Nếu người dùng đã đăng nhập, điều hướng đến màn hình chính
+            } else {
+                routeState.value = Route(Screen.LoginScreen) // Nếu người dùng chưa đăng nhập, điều hướng đến màn hình đăng nhập
+            }
+        }
+
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -89,7 +105,7 @@ fun WinKUIMain(
 
                 is Screen.HomeScreen -> {
                     visible = true
-                    HomeScreen(routeState = routeState, locationViewModel = locationViewModel, tourViewModel = tourViewModel)
+                    HomeScreen(routeState = routeState, locationViewModel = locationViewModel, tourViewModel = tourViewModel, userViewModel = userViewModel)
                 }
 
                 is Screen.FavouriteTourScreen -> {
@@ -139,6 +155,12 @@ fun WinKUIMain(
                 is Screen.InforBookingScreen -> {
                     visible = false
                     InforBookingScreen(routeState = routeState,tour = state.tour)
+                }
+
+                is Screen.ConfirmationScreen -> TODO()
+                is Screen.SplashScreen -> {
+                    visible = false
+                    SplashScreen()
                 }
             }
 //            if (routeState.value.screen !is Screen.LoginScreen && routeState.value.screen !is Screen.SignUpScreen && routeState.value.screen !is Screen.HomeScreen){

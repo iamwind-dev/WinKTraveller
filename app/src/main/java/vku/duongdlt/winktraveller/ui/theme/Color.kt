@@ -90,7 +90,7 @@ data class HeliaColorSchema(
     val deepOrange: Color = Color(0xFFFF5726),
     val brown: Color = Color(0xFF7A5548),
     val blueGrey: Color = Color(0xFF607D8A),
-
+    val bluex : Color = Color(0xFF3656D1),
     // Background
     val backgroundGreen: Color = Color(0xFFF6FFFA),
     val backgroundBlue: Color = Color(0xFFF6FAFD),

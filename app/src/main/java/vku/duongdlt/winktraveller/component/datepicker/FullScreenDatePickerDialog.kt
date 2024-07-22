@@ -60,62 +60,60 @@ fun FullScreenDatePickerDialog(
     onSelect: (date: LocalDate) -> Unit,
     initialSelectedDate: LocalDate? = null,
     routeState: MutableState<Route>,
-    tour : Tour
+    tour: Tour
 ) {
-    val openDialog = remember { mutableStateOf(false) }
-
-    val value = remember { mutableStateOf(1) }
+    var checkInDate by remember { mutableStateOf<LocalDate?>(initialSelectedDate) }
+    var checkOutDate by remember { mutableStateOf<LocalDate?>(null) }
+    var numberOfAdults by remember { mutableStateOf(1) }  // Added state for number of adults
 
     if (open) {
-        val datePickerState = rememberDatePickerState(
-            initialSelectedDateMillis = initialSelectedDate?.toMillis(),
-        )
-
         FullScreenDialog(onDismissRequest = onDismiss) {
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .systemBarsPadding()
             ) {
-                
                 BookingHeader(routeState = routeState, tour = tour)
-//                DatePickerDialog(open = openDialog, onSelect = { /*TODO*/ })
-//                DatePicker(
-//                    modifier = Modifier,
-//                    state = datePickerState,
-//                    colors = HeliaDatePickerDefaults.colors(),
-//                    title = null,
-//                    headline = null,
-//                    showModeToggle = false
-//                )
-                Row {
-                    TourSmallItem(tour = tour)
-                }
+                    Row(){
+                        Column (modifier = Modifier.padding(16.dp)){
+                            TourSmallItem(tour = tour)
+                        }
+
+                    }
                 Row(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier
+                        .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    
                     DateInput(
                         label = "Check In",
-                        value = "22/11/2024",
-                        modifier = Modifier
-                            .weight(1f)
+                        value = checkInDate?.toString() ?: "",
+                        selectedDate = checkInDate,
+                        onDateSelected = { date ->
+                            checkInDate = date
+                        },
+                        modifier = Modifier.weight(1f)
                     )
 
                     DateInput(
                         label = "Check Out",
-                        value = "22/11/2024",
-                        modifier = Modifier
-                            .weight(1f)
+                        value = checkOutDate?.toString() ?: "",
+                        selectedDate = checkOutDate,
+                        onDateSelected = { date ->
+                            checkOutDate = date
+                        },
+                        modifier = Modifier.weight(1f)
                     )
                 }
 
-                PeopleCountItem(title = "Adults", description = "2 Adults", value = value.value, onAction = { /*TODO*/ })
-
-                
+                PeopleCountItem(
+                    title = "Adults",
+                    description = "2 Adults",
+                    value = numberOfAdults,
+                    onAction = { /* Increment/Decrement logic here */ },
+                    onValueChange = { newValue -> numberOfAdults = newValue } // Update value on change
+                )
 
                 PrimaryButton(
                     title = "Continue",
@@ -123,20 +121,20 @@ fun FullScreenDatePickerDialog(
                         start = 25.dp,
                         top = 36.dp,
                         end = 25.dp,
-                        bottom = 36.dp,
-
-
+                        bottom = 36.dp
                     ),
-                    onClick = {routeState.value = Route(
-                        screen = Screen.InforBookingScreen(tour),
-                        prev = Screen.BookingScreen(tour)
-                    )}
+                    onClick = {
+                        routeState.value = Route(
+                            screen = Screen.InforBookingScreen(tour),
+                            prev = Screen.BookingScreen(tour)
+                        )
+                    }
                 )
             }
         }
-
     }
 }
+
 
 
 @Composable
@@ -145,9 +143,9 @@ private fun PeopleCountItem(
     description: String,
     value: Int,
     onAction: () -> Unit,
+    onValueChange: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val value1 = remember { mutableStateOf(1) }
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
@@ -164,25 +162,27 @@ private fun PeopleCountItem(
             )
             Text(
                 modifier = Modifier.padding(start = 40.dp),
-                text = value1.value.toString()+" Adults",
+                text = "$value Adults",
                 fontSize = 12.sp
             )
         }
         CountComponent(
             value = value,
-            onAction = {   if(value1.value > 0) value1.value--   },
+            onValueChange = { newValue ->
+                onValueChange(newValue) // Notify value change
+            },
             modifier = Modifier.padding(end = 16.dp)
         )
     }
 }
 
+
 @Composable
 fun CountComponent(
     value: Int,
-    onAction: () -> Unit,
+    onValueChange: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val value = remember { mutableStateOf(1) }
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -196,7 +196,7 @@ fun CountComponent(
                     shape = RoundedCornerShape(100)
                 )
                 .size(25.dp),
-            onClick = { if(value.value > 0) value.value-- }
+            onClick = { if (value > 0) onValueChange(value - 1) }
         ) {
             Icon(
                 imageVector = Icons.Rounded.Remove,
@@ -206,11 +206,10 @@ fun CountComponent(
             )
         }
         Text(
-            text = value.value.toString(),
+            text = value.toString(),
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier
                 .padding(horizontal = 10.dp)
-
         )
         IconButton(
             modifier = Modifier
@@ -220,7 +219,7 @@ fun CountComponent(
                     shape = RoundedCornerShape(100)
                 )
                 .size(25.dp),
-            onClick = { value.value++ }
+            onClick = { onValueChange(value + 1) }
         ) {
             Icon(
                 imageVector = Icons.Rounded.Add,
@@ -232,15 +231,17 @@ fun CountComponent(
     }
 }
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DateInput(
     label: String,
     value: String,
-    modifier: Modifier = Modifier,
+    selectedDate: LocalDate?,
+    onDateSelected: (LocalDate) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
     var openDialog by remember { mutableStateOf(false) }
     val displayedDate = selectedDate ?: LocalDate.now()
     Column(
@@ -248,12 +249,11 @@ private fun DateInput(
         horizontalAlignment = Alignment.Start
     ) {
         Row {
-
-                Text(
-                    text = label,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
+            Text(
+                text = label,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
             Spacer(modifier = Modifier.width(100.dp))
             Image(
                 painter = painterResource(id = R.drawable.ic_calendar),
@@ -268,19 +268,18 @@ private fun DateInput(
                 open = openDialog,
                 onDismiss = { openDialog = false },
                 onSelect = { date ->
-                    selectedDate = date
+                    onDateSelected(date)
                     openDialog = false
                 },
                 initialSelectedDate = selectedDate
             )
         }
 
-            TripitacaRoundedInputField(
-                value = displayedDate.toString(),
-                onValueChange = {},
-                modifier = Modifier.fillMaxWidth(),
-                readOnly = true
-            )
-
+        TripitacaRoundedInputField(
+            value = displayedDate.toString(),
+            onValueChange = {},
+            modifier = Modifier.fillMaxWidth(),
+            readOnly = true
+        )
     }
 }

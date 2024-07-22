@@ -5,7 +5,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,6 +22,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -227,28 +231,21 @@ fun loadDestinationLargeItems(
 
 @Composable
 fun tourSmallItem(
+    modifier: Modifier,
     tour: Tour,
     onItemClicked: (Tour) -> Unit
 ) {
-    Card(
-        modifier = Modifier
-            .padding(start = 16.dp, top = 12.dp, end = 16.dp)
-            .clickable { onItemClicked.invoke(tour) }
-            .shadow(
-                elevation = 4.dp,
-                shape = RoundedCornerShape(12.dp),
-                ambientColor = colorResource(id = R.color.TextColor),
-                spotColor = colorResource(id = R.color.TextColor)
-            ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = colorResource(id=R.color.white)),
-        shape = RoundedCornerShape(12.dp),
+    Surface(
+        modifier = modifier.height(IntrinsicSize.Min),
+        shape = HeliaTheme.shapes.medium,
+        shadowElevation = 2.dp,
+        color = if (HeliaTheme.theme.isDark) HeliaTheme.colors.dark2 else HeliaTheme.colors.white,
+        onClick = { onItemClicked.invoke(tour) }
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(16.dp)
         ) {
             ImageItem(
                 data = tour.url,
@@ -256,59 +253,102 @@ fun tourSmallItem(
                     .width(95.dp)
                     .height(84.dp),
             )
-            Column(
-                modifier = Modifier.padding(start = 14.dp)
-            ) {
-                Text(
-                    text = tour.tour_name,
-                    color = colorResource(id=R.color.textColor),
-                    style = HeliaTheme.typography.bodyLargeBold
-                )
-                Row(
-                    modifier = Modifier.padding(top = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        modifier = Modifier.size(16.dp),
-                        painter = painterResource(R.drawable.ci_location),
-                        contentDescription = null,
-                        tint = colorResource(id=R.color.TextColor)
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 8.dp),
-                        text = tour.tour_location_name,
-                        color = colorResource(id=R.color.TextColor),
-                        style = HeliaTheme.typography.bodyLargeBold
-                    )
-                }
-//                Text(
-//                    modifier = Modifier.padding(top = 6.dp),
-//                    text = tour.tour_description,
-//                    color = colorResource(id=R.color.secondTextColor),
-//                    style = MaterialTheme.typography.bodySmall,
-//                    overflow = TextOverflow.Ellipsis,
-//                    maxLines = 2
-//                )
-                HtmlText(text = tour.tour_description, style = HeliaTheme.typography.bodyLargeRegular,maxLines = 2, fontSize = 14.sp)
-                Row(
-                    modifier = Modifier.padding(top = 9.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = tour.tour_price.toString(),
-                        color = colorResource(id=R.color.textColor),
-                        style = MaterialTheme.typography.titleSmall
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 4.dp),
-                        text = "/${tour.tour_duration}",
-                        color = colorResource(id=R.color.secondTextColor),
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-            }
+            Spacer(modifier = Modifier.width(16.dp))
+            ListHotelCardDetails(
+                modifier = Modifier.weight(1f),
+                name = tour.tour_name,
+                city = tour.tour_location_name,
+                rating = tour.tour_location_id.toString(),
+                reviews = tour.tour_includes
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            ListHotelCardPriceAndBookmark(
+                modifier = Modifier.fillMaxHeight(),
+                pricePerNight = tour.tour_price,
+                bookmarked = true,
+                onBookmarkClick = {  }
+            )
         }
     }
+//    Card(
+//        modifier = Modifier
+//            .padding(start = 16.dp, top = 12.dp, end = 16.dp)
+//            .clickable { onItemClicked.invoke(tour) }
+//            .shadow(
+//                elevation = 4.dp,
+//                shape = RoundedCornerShape(12.dp),
+//                ambientColor = colorResource(id = R.color.TextColor),
+//                spotColor = colorResource(id = R.color.TextColor)
+//            ),
+//        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+//        colors = CardDefaults.cardColors(containerColor = colorResource(id=R.color.white)),
+//        shape = RoundedCornerShape(12.dp),
+//    ) {
+//        Row(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(12.dp),
+//            horizontalArrangement = Arrangement.SpaceBetween
+//        ) {
+//            ImageItem(
+//                data = tour.url,
+//                modifier = Modifier
+//                    .width(95.dp)
+//                    .height(84.dp),
+//            )
+//            Column(
+//                modifier = Modifier.padding(start = 14.dp)
+//            ) {
+//                Text(
+//                    text = tour.tour_name,
+//                    color = colorResource(id=R.color.textColor),
+//                    style = HeliaTheme.typography.bodyLargeBold
+//                )
+//                Row(
+//                    modifier = Modifier.padding(top = 6.dp),
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    Icon(
+//                        modifier = Modifier.size(16.dp),
+//                        painter = painterResource(R.drawable.ci_location),
+//                        contentDescription = null,
+//                        tint = colorResource(id=R.color.TextColor)
+//                    )
+//                    Text(
+//                        modifier = Modifier.padding(start = 8.dp),
+//                        text = tour.tour_location_name,
+//                        color = colorResource(id=R.color.TextColor),
+//                        style = HeliaTheme.typography.bodyLargeBold
+//                    )
+//                }
+////                Text(
+////                    modifier = Modifier.padding(top = 6.dp),
+////                    text = tour.tour_description,
+////                    color = colorResource(id=R.color.secondTextColor),
+////                    style = MaterialTheme.typography.bodySmall,
+////                    overflow = TextOverflow.Ellipsis,
+////                    maxLines = 2
+////                )
+//                HtmlText(text = tour.tour_description, style = HeliaTheme.typography.bodyLargeRegular,maxLines = 2, fontSize = 14.sp)
+//                Row(
+//                    modifier = Modifier.padding(top = 9.dp),
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    Text(
+//                        text = tour.tour_price.toString(),
+//                        color = colorResource(id=R.color.textColor),
+//                        style = MaterialTheme.typography.titleSmall
+//                    )
+//                    Text(
+//                        modifier = Modifier.padding(start = 4.dp),
+//                        text = "/${tour.tour_duration}",
+//                        color = colorResource(id=R.color.secondTextColor),
+//                        style = MaterialTheme.typography.bodySmall
+//                    )
+//                }
+//            }
+//        }
+//    }
 }
 
 @Composable
@@ -334,95 +374,126 @@ fun loadTourLargeItems(
 
 @Composable
 fun tourLargeItem(
+    modifier: Modifier = Modifier,
     tour: Tour,
     onItemClicked: (Tour) -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .width(222.dp)
-            .height(143.dp)
-            .padding(start = 16.dp)
-            .clickable { onItemClicked.invoke(tour) }
-            .background(
-                color = colorResource(id = R.color.categoryBgColor),
-                shape = RoundedCornerShape(10.dp)
-            ),
-        contentAlignment = Alignment.BottomStart
+    Surface(
+        modifier = modifier.size(width = 300.dp, height = 400.dp).padding(start = 16.dp),
+        shape = HeliaTheme.shapes.extraLarge,
+        shadowElevation = 2.dp,
+        onClick = {onItemClicked.invoke(tour)}
     ) {
-        ImageItem(tour.url)
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 14.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column {
-                Text(
-                    text = tour.tour_name,
-                    color = colorResource(id=R.color.white),
-                    style = MaterialTheme.typography.titleSmall
-                )
-                Row(
-                    modifier = Modifier.padding(top = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        modifier = Modifier.size(16.dp),
-                        painter = painterResource(R.drawable.ci_location),
-                        contentDescription = null,
-                        tint = colorResource(id=R.color.white)
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 8.dp),
-                        text = tour.tour_location_name,
-                        color = colorResource(id=R.color.white),
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-            }
-            Column(
-                modifier = Modifier.padding(top = 4.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = tour.tour_price.toString(),
-                    color = colorResource(id=R.color.white),
-                    style = MaterialTheme.typography.titleSmall
-                )
-                Text(
-                    text = "/${tour.tour_duration}",
-                    color = colorResource(id=R.color.white),
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
+ImageItem(tour.url)
+//        AsyncImage(
+//            modifier = Modifier.fillMaxSize(),
+//            model = imageUrl,
+//            contentDescription = name,
+//            contentScale = ContentScale.Crop
+//        )
+        Column {
+            Chip(
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(32.dp),
+                toggled = true,
+                onClick = { },
+                text = tour.tour_location_id.toString(),
+                leadingIconResId = R.drawable.ic_star,
+                chipSize = ChipSizeValues.Small
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            ImageHotelCardDetails(
+                modifier = Modifier.fillMaxWidth(),
+                name = tour.tour_name,
+                city = tour.tour_location_name,
+                pricePerNight = tour.tour_price,
+                bookmarked = true,
+                onBookmarkClick = {  }
+            )
         }
+
     }
+//    Box(
+//        modifier = Modifier
+//            .width(222.dp)
+//            .height(143.dp)
+//            .padding(start = 16.dp)
+//            .clickable { onItemClicked.invoke(tour) }
+//            .background(
+//                color = colorResource(id = R.color.categoryBgColor),
+//                shape = RoundedCornerShape(10.dp)
+//            ),
+//        contentAlignment = Alignment.BottomStart
+//    ) {
+//        ImageItem(tour.url)
+//
+//        Row(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(horizontal = 14.dp, vertical = 12.dp),
+//            verticalAlignment = Alignment.CenterVertically,
+//            horizontalArrangement = Arrangement.SpaceBetween
+//        ) {
+//            Column {
+//                Text(
+//                    text = tour.tour_name,
+//                    color = colorResource(id=R.color.white),
+//                    style = MaterialTheme.typography.titleSmall
+//                )
+//                Row(
+//                    modifier = Modifier.padding(top = 4.dp),
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    Icon(
+//                        modifier = Modifier.size(16.dp),
+//                        painter = painterResource(R.drawable.ci_location),
+//                        contentDescription = null,
+//                        tint = colorResource(id=R.color.white)
+//                    )
+//                    Text(
+//                        modifier = Modifier.padding(start = 8.dp),
+//                        text = tour.tour_location_name,
+//                        color = colorResource(id=R.color.white),
+//                        style = MaterialTheme.typography.bodySmall
+//                    )
+//                }
+//            }
+//            Column(
+//                modifier = Modifier.padding(top = 4.dp),
+//                horizontalAlignment = Alignment.CenterHorizontally
+//            ) {
+//                Text(
+//                    text = tour.tour_price.toString(),
+//                    color = colorResource(id=R.color.white),
+//                    style = MaterialTheme.typography.titleSmall
+//                )
+//                Text(
+//                    text = "/${tour.tour_duration}",
+//                    color = colorResource(id=R.color.white),
+//                    style = MaterialTheme.typography.bodySmall
+//                )
+//            }
+//        }
+//    }
 }
 
 @Composable
 fun TourSmallItem(
-    tour: Tour
+    tour: Tour,
+    modifier: Modifier = Modifier,
 ) {
-    Card(
-        modifier = Modifier
-            .padding(start = 16.dp, top = 12.dp, end = 16.dp)
-            .shadow(
-                elevation = 4.dp,
-                shape = RoundedCornerShape(12.dp),
-                ambientColor = colorResource(id = R.color.primaryColor),
-                spotColor = colorResource(id = R.color.primaryColor)
-            ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = colorResource(id=R.color.white)),
-        shape = RoundedCornerShape(12.dp),
+    Surface(
+        modifier = modifier.height(IntrinsicSize.Min),
+        shape = HeliaTheme.shapes.medium,
+        shadowElevation = 2.dp,
+        color = if (HeliaTheme.theme.isDark) HeliaTheme.colors.dark2 else HeliaTheme.colors.white,
+
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(16.dp)
         ) {
             ImageItem(
                 data = tour.url,
@@ -430,57 +501,24 @@ fun TourSmallItem(
                     .width(95.dp)
                     .height(84.dp),
             )
-            Column(
-                modifier = Modifier.padding(start = 14.dp)
-            ) {
-                Text(
-                    text = tour.tour_name,
-                    color = colorResource(id=R.color.textColor),
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Row(
-                    modifier = Modifier.padding(top = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        modifier = Modifier.size(16.dp),
-                        painter = painterResource(R.drawable.ci_location),
-                        contentDescription = null,
-                        tint = colorResource(id=R.color.primaryColor)
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 8.dp),
-                        text = tour.tour_location_name,
-                        color = colorResource(id=R.color.thirdTextColor),
-                        style = MaterialTheme.typography.headlineMedium
-                    )
-                }
-//                Text(
-//                    modifier = Modifier.padding(top = 6.dp),
-//                    text = tour.tour_description,
-//                    color = colorResource(id=R.color.secondTextColor),
-//                    style = MaterialTheme.typography.bodySmall,
-//                    overflow = TextOverflow.Ellipsis,
-//                    maxLines = 2
-//                )
-                HtmlText(text = tour.tour_description, maxLines = 2, fontSize = 14.sp)
-                Row(
-                    modifier = Modifier.padding(top = 9.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = tour.tour_price.toString(),
-                        color = colorResource(id=R.color.textColor),
-                        style = MaterialTheme.typography.titleSmall
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 4.dp),
-                        text = "/${tour.tour_duration}",
-                        color = colorResource(id=R.color.secondTextColor),
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-            }
+            Spacer(modifier = Modifier.width(16.dp))
+            ListHotelCardDetails(
+                modifier = Modifier.weight(1f),
+                name = tour.tour_name,
+                city = tour.tour_location_name,
+                rating = tour.tour_location_id.toString(),
+                reviews = tour.tour_includes
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            ListHotelCardPriceAndBookmark(
+                modifier = Modifier.fillMaxHeight(),
+                pricePerNight = tour.tour_price,
+                bookmarked = true,
+                onBookmarkClick = {  }
+            )
         }
     }
 }
+
+
+

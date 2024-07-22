@@ -2,6 +2,7 @@ package vku.duongdlt.winktraveller.navigation
 
 import vku.duongdlt.winktraveller.model.Destination
 import vku.duongdlt.winktraveller.model.Tour
+import vku.duongdlt.winktraveller.model.User
 
 
 sealed class Screen(val route: String) {
@@ -16,5 +17,7 @@ sealed class Screen(val route: String) {
     object SignUpScreen : Screen("order_screen")
     object ProfileScreen : Screen("profile_screen")
     data class InforBookingScreen(val tour: Tour) : Screen("infor_booking_screen")
+    data class ConfirmationScreen(val tour: Tour, val name: String, val email: String, val phone: String,val user: User) : Screen("confirmation_screen")
+    object SplashScreen : Screen("splash_screen")
 }
 

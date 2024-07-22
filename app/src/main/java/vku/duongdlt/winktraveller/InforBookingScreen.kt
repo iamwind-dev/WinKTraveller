@@ -24,6 +24,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.Start
@@ -46,16 +50,13 @@ import vku.duongdlt.winktraveller.navigation.Route
 import vku.duongdlt.winktraveller.navigation.Screen
 import vku.duongdlt.winktraveller.ui.theme.HeliaTheme
 import vku.duongdlt.winktraveller.ui.theme.WinKTravellerTheme
-
 @Composable
-fun InforBookingScreen(routeState: MutableState<Route>,tour: Tour){
-    val formState: FormState<BaseState<*>> = FormState(
-        listOf(
-            TextFieldState("username"),
-            TextFieldState("email"),
-            TextFieldState("number")
-        )
-    )
+fun InforBookingScreen(routeState: MutableState<Route>, tour: Tour) {
+    // State to manage form data
+    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
+
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -79,8 +80,7 @@ fun InforBookingScreen(routeState: MutableState<Route>,tour: Tour){
                     painter = painterResource(id = R.drawable.back_icon),
                     contentDescription = null
                 )
-                Column(
-                ) {
+                Column {
                     Text(
                         text = "Step 2/2",
                         color = Color.Black,
@@ -88,41 +88,64 @@ fun InforBookingScreen(routeState: MutableState<Route>,tour: Tour){
                     )
                 }
             }
+
             Row {
-                TourSmallItem(tour = tour)
+                Column(modifier = Modifier.padding(16.dp)) {
+                    TourSmallItem(tour = tour)
+                }
             }
-            Row(modifier = Modifier.padding(16.dp)) {
-                PersonalDetails(formState)
+
+            Row {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    // Pass state handlers to PersonalDetails
+                    PersonalDetails(
+                        name = name,
+                        onNameChange = { name = it },
+                        email = email,
+                        onEmailChange = { email = it },
+                        phone = phone,
+                        onPhoneChange = { phone = it }
+                    )
+                }
             }
+
             PrimaryButton(
                 title = "Continue",
                 paddingValues = PaddingValues(
                     start = 25.dp,
                     top = 36.dp,
                     end = 25.dp,
-                    bottom = 36.dp,
-
-
-                    ),
-                onClick = {routeState.value = Route(
-                    screen = Screen.InforBookingScreen(tour),
-                    prev = Screen.BookingScreen(tour)
-                )}
+                    bottom = 36.dp
+                ),
+                onClick = {
+//                    routeState.value = Route(
+//                        screen = Screen.ConfirmationScreen(
+//                            tour = tour,
+//                            name = name,
+//                            email = email,
+//                            phone = phone
+//                        ),
+//                        prev = Screen.InforBookingScreen(tour)
+//                    )
+                }
             )
         }
     }
 }
 
 @Composable
-fun PersonalDetails(formState: FormState<BaseState<*>>) {
-    val usernameState: TextFieldState = formState.getState("username")
-    val emailState: TextFieldState = formState.getState("email")
-    val numberState: TextFieldState = formState.getState("number")
-
+fun PersonalDetails(
+    name: String,
+    onNameChange: (String) -> Unit,
+    email: String,
+    onEmailChange: (String) -> Unit,
+    phone: String,
+    onPhoneChange: (String) -> Unit
+) {
     Column(
-        modifier = Modifier.padding(top=16.dp),
+        modifier = Modifier.padding(top = 16.dp),
         verticalArrangement = Arrangement.Top,
-        horizontalAlignment = CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             modifier = Modifier.width(400.dp),
@@ -130,28 +153,48 @@ fun PersonalDetails(formState: FormState<BaseState<*>>) {
             style = HeliaTheme.typography.heading6
         )
 
+        Text(
+            text = "Name",
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(start = 16.dp)
+        )
+        InputField(
+            value = name,
+            onValueChange = onNameChange,
+            placeholderText = "Enter your name",
+            modifier = Modifier.width(400.dp)
+        )
 
+        Text(
+            text = "Email",
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(start = 16.dp)
+        )
+        InputField(
+            value = email,
+            onValueChange = onEmailChange,
+            placeholderText = "Enter your email",
+            modifier = Modifier.width(400.dp)
+        )
 
-        Text(text = "Name",modifier= Modifier
-            .align(Start)
-            .padding(start = 16.dp))
-        InputField(value = "", onValueChange = {}, placeholderText = "",modifier = Modifier.width(400.dp))
-
-
-        Text(text = "Email",modifier= Modifier
-            .align(Start)
-            .padding(start = 16.dp))
-        InputField(value = "", onValueChange = {}, placeholderText = "",modifier = Modifier.width(400.dp))
-
-        Text(text = "Phone",modifier= Modifier
-            .align(Start)
-            .padding(start = 16.dp))
-
-        InputField(value = "", onValueChange = {}, placeholderText = "", modifier = Modifier.width(400.dp))
-
-
+        Text(
+            text = "Phone",
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(start = 16.dp)
+        )
+        InputField(
+            value = phone,
+            onValueChange = onPhoneChange,
+            placeholderText = "Enter your phone number",
+            modifier = Modifier.width(400.dp)
+        )
     }
 }
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
