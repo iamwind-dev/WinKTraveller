@@ -1,4 +1,4 @@
-package vku.duongdlt.winktraveller
+package vku.duongdlt.winktraveller.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -8,56 +8,49 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester.Companion.createRefs
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import vku.duongdlt.winktraveller.component.ChildLayout
-import vku.duongdlt.winktraveller.component.DefaultBackArrow
-import vku.duongdlt.winktraveller.component.InformationCard
+import kotlinx.coroutines.launch
+import vku.duongdlt.winktraveller.R
+import vku.duongdlt.winktraveller.ViewModel.UserViewModel
 import vku.duongdlt.winktraveller.component.Toggle
-import vku.duongdlt.winktraveller.component.VerticalScrollLayout
-import vku.duongdlt.winktraveller.component.homeHeader
-import vku.duongdlt.winktraveller.component.profileHeader
+import vku.duongdlt.winktraveller.model.User
 import vku.duongdlt.winktraveller.util.BOTTOM_NAV_SPACE
 
 import vku.duongdlt.winktraveller.navigation.Route
+import vku.duongdlt.winktraveller.navigation.Screen
 import vku.duongdlt.winktraveller.ui.theme.HeliaTheme
 
 enum class ProfileScreenContents{
@@ -71,7 +64,16 @@ enum class ProfileScreenContents{
 @OptIn(ExperimentalComposeUiApi::class)
 
 @Composable
-fun ProfileScreen(routeState: MutableState<Route>) {
+fun ProfileScreen(routeState: MutableState<Route>,userViewModel: UserViewModel) {
+    var user by remember { mutableStateOf<User?>(null) }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        userViewModel.getCurrentUser {
+            user = it
+        }
+    }
+
     Surface(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier.fillMaxSize()
@@ -116,16 +118,18 @@ fun ProfileScreen(routeState: MutableState<Route>) {
                         }
                     }
 
-                    Text(
-                        text = "Thai Duong",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        modifier = Modifier.constrainAs(nameText) {
-                            top.linkTo(image.bottom, margin = 8.dp)
-                            linkTo(start = parent.start, end = parent.end)
-                        }
-                    )
+                    user?.let {
+                        Text(
+                            text = it.user_username,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            modifier = Modifier.constrainAs(nameText) {
+                                top.linkTo(image.bottom, margin = 8.dp)
+                                linkTo(start = parent.start, end = parent.end)
+                            }
+                        )
+                    }
                 }
             }
 
@@ -144,7 +148,9 @@ fun ProfileScreen(routeState: MutableState<Route>) {
                             modifier = Modifier.fillMaxWidth(),
                             icon = painterResource(id = R.drawable.ic_profile_border),
                             text = "Profile",
-                            onClick = { }
+                            onClick = {
+                                routeState.value = Route(screen = Screen.InformationScreen,prev = Screen.ProfileScreen)
+                            }
                         )
 
                         SettingCategory(
@@ -170,7 +176,14 @@ fun ProfileScreen(routeState: MutableState<Route>) {
 
                         SettingThemeCategory(checked = false, onCheckedChange = {})
                         
-                        SettingLogoutCategory(onClick = { /*TODO*/ })
+                        SettingLogoutCategory(onClick = {
+                            coroutineScope.launch {
+                                val isLogout = userViewModel.logoutUser()
+                                if (isLogout) {
+                                    routeState.value = Route(screen = Screen.LoginScreen)
+                                }
+                            }
+                        })
                     }
                 }
 

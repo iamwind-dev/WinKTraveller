@@ -30,7 +30,7 @@ fun LoadingDialog(
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator(
-                        color = Color.Blue
+                        color = colorResource(id = R.color.TextColor)
                     )
                 }
             }

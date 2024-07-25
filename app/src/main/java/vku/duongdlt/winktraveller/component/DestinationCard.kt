@@ -1,5 +1,6 @@
 package vku.duongdlt.winktraveller.component
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,19 +26,29 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import vku.duongdlt.winktraveller.util.ImageItem
 import vku.duongdlt.winktraveller.R
+import vku.duongdlt.winktraveller.ViewModel.BookmarkViewModel
+import vku.duongdlt.winktraveller.ViewModel.UserViewModel
+import vku.duongdlt.winktraveller.model.Bookmark
 import vku.duongdlt.winktraveller.model.Destination
 import vku.duongdlt.winktraveller.model.Tour
+import vku.duongdlt.winktraveller.model.User
 import vku.duongdlt.winktraveller.ui.theme.HeliaTheme
+import vku.duongdlt.winktraveller.util.formatCurrency
 
 @Composable
 fun destinationSmallItem(
@@ -231,9 +242,11 @@ fun loadDestinationLargeItems(
 
 @Composable
 fun tourSmallItem(
+    user: User,
     modifier: Modifier,
     tour: Tour,
-    onItemClicked: (Tour) -> Unit
+    onItemClicked: (Tour) -> Unit,
+
 ) {
     Surface(
         modifier = modifier.height(IntrinsicSize.Min),
@@ -262,11 +275,72 @@ fun tourSmallItem(
                 reviews = tour.tour_includes
             )
             Spacer(modifier = Modifier.width(8.dp))
+
+            val isFav = remember { mutableStateOf(false) }
+            val bm = remember { mutableStateOf(false) }
+            var bookmarkViewModel = BookmarkViewModel()
+            val bookmarkId = remember { mutableStateOf("") }
+
+
+            LaunchedEffect(tour, user) {
+                if (user != null) {
+                    bookmarkViewModel.isTourBookmarked(user.id, tour.tour_id) { bookmarked ->
+                        isFav.value = bookmarked
+                        println("isFav: $isFav")
+                    }
+                }
+            }
+
+            val bookmarkviewmodel = BookmarkViewModel()
+            val userViewModel = remember { UserViewModel() }
+
+            val context = LocalContext.current
+            val bookmarkid = remember { mutableStateOf("") }
+            var updatedBookmark : Bookmark
+
             ListHotelCardPriceAndBookmark(
+                tour = tour,
                 modifier = Modifier.fillMaxHeight(),
-                pricePerNight = tour.tour_price,
-                bookmarked = true,
-                onBookmarkClick = {  }
+                pricePerNight = formatCurrency(tour.tour_price),
+                bookmarked = isFav,
+                onBookmarkClick = {
+                    if (isFav.value) {
+                        bookmarkviewmodel.deleteBookmark(bookmarkId = bookmarkid.value){
+                                success ->
+                            if (success) {
+                                println("Bookmark deleted successfully")
+                            } else {
+                                println("Failed to delete bookmark")
+
+                            }                        }
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.complete),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        isFav.value = false
+                    } else {
+                        updatedBookmark=Bookmark(
+                            bookmark_tour_id = tour.tour_id,
+                            bookmark_user_id = user?.id.toString(),
+                        )
+                        bookmarkviewmodel.addBookmark(updatedBookmark){
+                                success, bookmarkId ->
+                            if (success) {
+                                println("Bookmark added with ID: $bookmarkId")
+                                bookmarkid.value = bookmarkId.toString()
+                            } else {
+                                println("Failed to add bookmark")
+                            }
+                        }
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.complete),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        isFav.value = true
+                    }
+                }
             )
         }
     }
@@ -354,7 +428,9 @@ fun tourSmallItem(
 @Composable
 fun loadTourLargeItems(
     tours: List<Tour>,
-    onItemClicked: (Tour) -> Unit
+    user: User,
+    onItemClicked: (Tour) -> Unit,
+
 ){
     LazyRow(
         modifier = Modifier.padding(top = 22.dp, bottom = 22.dp),
@@ -365,7 +441,8 @@ fun loadTourLargeItems(
             itemContent = {
                 tourLargeItem(
                     tour = it,
-                    onItemClicked = onItemClicked
+                    onItemClicked = onItemClicked,
+                    user = user
                 )
             }
         )
@@ -376,15 +453,17 @@ fun loadTourLargeItems(
 fun tourLargeItem(
     modifier: Modifier = Modifier,
     tour: Tour,
-    onItemClicked: (Tour) -> Unit
+    onItemClicked: (Tour) -> Unit,
+    user: User
 ) {
+    val bookmark:Bookmark
     Surface(
         modifier = modifier.size(width = 300.dp, height = 400.dp).padding(start = 16.dp),
         shape = HeliaTheme.shapes.extraLarge,
         shadowElevation = 2.dp,
         onClick = {onItemClicked.invoke(tour)}
     ) {
-ImageItem(tour.url)
+        ImageItem(tour.url)
 //        AsyncImage(
 //            modifier = Modifier.fillMaxSize(),
 //            model = imageUrl,
@@ -403,13 +482,75 @@ ImageItem(tour.url)
                 chipSize = ChipSizeValues.Small
             )
             Spacer(modifier = Modifier.weight(1f))
+            val isFav = remember { mutableStateOf(false) }
+            var bookmarkViewModel = BookmarkViewModel()
+            val bookmarkId = remember { mutableStateOf("") }
+
+
+            LaunchedEffect(tour, user) {
+                if (user != null) {
+                    bookmarkViewModel.isTourBookmarked(user.id, tour.tour_id) { bookmarked ->
+                        isFav.value = bookmarked
+                        println("isFav: $isFav")
+                    }
+                }
+            }
+
+            val bookmarkviewmodel = BookmarkViewModel()
+            val userViewModel = remember { UserViewModel() }
+            var user by remember { mutableStateOf<User?>(null) }
+            LaunchedEffect(Unit) {
+                userViewModel.getCurrentUser {
+                    user = it
+                }
+            }
+            val context = LocalContext.current
+                val bookmarkid = remember { mutableStateOf("") }
+                var updatedBookmark : Bookmark
+
             ImageHotelCardDetails(
                 modifier = Modifier.fillMaxWidth(),
                 name = tour.tour_name,
                 city = tour.tour_location_name,
-                pricePerNight = tour.tour_price,
-                bookmarked = true,
-                onBookmarkClick = {  }
+                pricePerNight = formatCurrency(tour.tour_price),
+                bookmarked = isFav,
+                tour = tour,
+                onBookmarkClick = { if (isFav.value) {
+                    bookmarkviewmodel.deleteBookmark(bookmarkId = bookmarkid.value){
+                            success ->
+                        if (success) {
+                            println("Bookmark deleted successfully")
+                        } else {
+                            println("Failed to delete bookmark")
+
+                        }                        }
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.complete),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    isFav.value = false
+                } else {
+                    isFav.value = true
+                    updatedBookmark=Bookmark(
+                        bookmark_tour_id = tour.tour_id,
+                        bookmark_user_id = user?.id.toString(),
+                    )
+                    bookmarkviewmodel.addBookmark(updatedBookmark){
+                            success, bookmarkId ->
+                        if (success) {
+                            println("Bookmark added with ID: $bookmarkId")
+                            bookmarkid.value = bookmarkId.toString()
+                        } else {
+                            println("Failed to add bookmark")
+                        }
+                    }
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.complete),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } }
             )
         }
 
@@ -510,11 +651,19 @@ fun TourSmallItem(
                 reviews = tour.tour_includes
             )
             Spacer(modifier = Modifier.width(8.dp))
+            val isFav = remember { mutableStateOf(false) }
             ListHotelCardPriceAndBookmark(
+                tour = tour,
                 modifier = Modifier.fillMaxHeight(),
-                pricePerNight = tour.tour_price,
-                bookmarked = true,
-                onBookmarkClick = {  }
+                pricePerNight = formatCurrency(tour.tour_price),
+                bookmarked = isFav,
+                onBookmarkClick = { if (isFav.value) {
+
+                    isFav.value = false
+                } else {
+
+                    isFav.value = true
+                } }
             )
         }
     }

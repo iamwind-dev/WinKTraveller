@@ -103,7 +103,7 @@ fun ImageItem(
         if (isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center),
-                color = HeliaTheme.colors.primary500
+                color = HeliaTheme.colors.bluex
             )
         }
     }

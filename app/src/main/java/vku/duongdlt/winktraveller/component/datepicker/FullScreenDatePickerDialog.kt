@@ -40,12 +40,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import vku.duongdlt.winktraveller.R
+import vku.duongdlt.winktraveller.ViewModel.UserViewModel
 import vku.duongdlt.winktraveller.component.BookingHeader
 import vku.duongdlt.winktraveller.component.FullScreenDialog
 import vku.duongdlt.winktraveller.component.PrimaryButton
 import vku.duongdlt.winktraveller.component.TourSmallItem
 import vku.duongdlt.winktraveller.component.TripitacaRoundedInputField
+import vku.duongdlt.winktraveller.model.Booking
 import vku.duongdlt.winktraveller.model.Tour
+import vku.duongdlt.winktraveller.model.User
 import vku.duongdlt.winktraveller.navigation.Route
 import vku.duongdlt.winktraveller.navigation.Screen
 import vku.duongdlt.winktraveller.util.toMillis
@@ -60,11 +63,14 @@ fun FullScreenDatePickerDialog(
     onSelect: (date: LocalDate) -> Unit,
     initialSelectedDate: LocalDate? = null,
     routeState: MutableState<Route>,
-    tour: Tour
+    tour: Tour,
+    booking: Booking,user: User
 ) {
+
     var checkInDate by remember { mutableStateOf<LocalDate?>(initialSelectedDate) }
     var checkOutDate by remember { mutableStateOf<LocalDate?>(null) }
     var numberOfAdults by remember { mutableStateOf(1) }  // Added state for number of adults
+
 
     if (open) {
         FullScreenDialog(onDismissRequest = onDismiss) {
@@ -80,32 +86,32 @@ fun FullScreenDatePickerDialog(
                         }
 
                     }
-                Row(
-                    modifier = Modifier
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    DateInput(
-                        label = "Check In",
-                        value = checkInDate?.toString() ?: "",
-                        selectedDate = checkInDate,
-                        onDateSelected = { date ->
-                            checkInDate = date
-                        },
-                        modifier = Modifier.weight(1f)
-                    )
-
-                    DateInput(
-                        label = "Check Out",
-                        value = checkOutDate?.toString() ?: "",
-                        selectedDate = checkOutDate,
-                        onDateSelected = { date ->
-                            checkOutDate = date
-                        },
-                        modifier = Modifier.weight(1f)
-                    )
-                }
+//                Row(
+//                    modifier = Modifier
+//                        .padding(16.dp),
+//                    verticalAlignment = Alignment.CenterVertically,
+//                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+//                ) {
+//                    DateInput(
+//                        label = "Check In",
+//                        value = checkInDate?.toString() ?: "",
+//                        selectedDate = checkInDate,
+//                        onDateSelected = { date ->
+//                            checkInDate = date
+//                        },
+//                        modifier = Modifier.weight(1f)
+//                    )
+//
+//                    DateInput(
+//                        label = "Check Out",
+//                        value = checkOutDate?.toString() ?: "",
+//                        selectedDate = checkOutDate,
+//                        onDateSelected = { date ->
+//                            checkOutDate = date
+//                        },
+//                        modifier = Modifier.weight(1f)
+//                    )
+//                }
 
                 PeopleCountItem(
                     title = "Adults",
@@ -114,7 +120,7 @@ fun FullScreenDatePickerDialog(
                     onAction = { /* Increment/Decrement logic here */ },
                     onValueChange = { newValue -> numberOfAdults = newValue } // Update value on change
                 )
-
+                val totalPrice = tour.tour_price * numberOfAdults
                 PrimaryButton(
                     title = "Continue",
                     paddingValues = PaddingValues(
@@ -124,8 +130,15 @@ fun FullScreenDatePickerDialog(
                         bottom = 36.dp
                     ),
                     onClick = {
+                        val updatedBooking = booking.copy(
+                            booking_capacity = numberOfAdults,
+                            booking_total = totalPrice,
+                            booking_date = LocalDate.now().toMillis().toString(),
+                            // If there are fields like numberOfAdults, update them here
+                        )
+
                         routeState.value = Route(
-                            screen = Screen.InforBookingScreen(tour),
+                            screen = Screen.InforBookingScreen(tour, updatedBooking,user),
                             prev = Screen.BookingScreen(tour)
                         )
                     }

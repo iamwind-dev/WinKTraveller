@@ -1,4 +1,4 @@
-package vku.duongdlt.winktraveller
+package vku.duongdlt.winktraveller.view
 
 import android.content.Intent
 import android.os.Bundle
@@ -18,8 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import vku.duongdlt.winktraveller.MainActivity
+import vku.duongdlt.winktraveller.R
 import vku.duongdlt.winktraveller.ui.theme.WinKTravellerTheme
 
 class SplashActivity : ComponentActivity() {

@@ -35,7 +35,7 @@ import vku.duongdlt.winktraveller.component.PrimaryButton as PrimaryButton1
 
 val menuItems = arrayListOf<MenuItem>().apply {
     add(MenuItem(Menu.HOME, "Home", R.drawable.menu_home, Screen.HomeScreen))
-    add(MenuItem(Menu.FAVORITE, "Favorite", R.drawable.menu_fav,Screen.FavouriteTourScreen))
+    add(MenuItem(Menu.FAVORITE, "Favorite", R.drawable.ic_bookmark,Screen.FavouriteTourScreen))
     add(MenuItem(Menu.CART, "Cart", R.drawable.menu_cart,Screen.AllOrderScreen))
     add(MenuItem(Menu.PROFILE, "Profile", R.drawable.menu_profile,Screen.ProfileScreen))
 }

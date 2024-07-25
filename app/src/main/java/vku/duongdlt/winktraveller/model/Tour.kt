@@ -1,7 +1,7 @@
 package vku.duongdlt.winktraveller.model
 
 data class Tour(
-    val tour_id: Int=0,
+    val tour_id: String="",
     val tour_create_date :String="",
     val tour_description:String="",
     val tour_duration:Int=0,

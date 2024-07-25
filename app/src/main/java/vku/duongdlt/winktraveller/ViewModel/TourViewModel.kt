@@ -7,6 +7,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
+import vku.duongdlt.winktraveller.model.Booking
 import vku.duongdlt.winktraveller.model.Location
 import vku.duongdlt.winktraveller.model.Tour
 
@@ -33,6 +34,26 @@ class TourViewModel(): ViewModel() {
         })
     }
 
+    fun getTourByBookingtourId(tourId: String, tourCallback: (Tour?) -> Unit) {
+        val database: FirebaseDatabase = FirebaseDatabase.getInstance()
+        val tourRef = database.getReference("tour") // Đảm bảo đường dẫn đúng tới node tour
+        // Sử dụng một đối tượng tour thay vì danh sách
+        tourRef.orderByChild("id").equalTo(tourId)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    // Chỉ lấy tour đầu tiên (nếu có)
+                    val tour = dataSnapshot.children.firstOrNull()?.getValue(Tour::class.java)
+                    tourCallback(tour) // Gọi lại hàm với tour đơn lẻ
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Xử lý lỗi, ví dụ, ghi log lỗi hoặc gọi lại hàm với giá trị null
+                    tourCallback(null)
+                }
+            })
+    }
+
+
     suspend fun getImagesFromFirebase(folder: String): List<String> {
         val storage = FirebaseStorage.getInstance()
         val storageRef = storage.reference.child(folder)
@@ -50,4 +71,6 @@ class TourViewModel(): ViewModel() {
 
         return images
     }
+
+
 }

@@ -10,7 +10,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,13 +18,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
+import vku.duongdlt.winktraveller.ViewModel.BookingViewModel
+import vku.duongdlt.winktraveller.ViewModel.BookmarkViewModel
 import vku.duongdlt.winktraveller.ViewModel.LocationViewModel
+
 import vku.duongdlt.winktraveller.ViewModel.TourViewModel
 import vku.duongdlt.winktraveller.ViewModel.UserViewModel
-import vku.duongdlt.winktraveller.component.BottomButtonBar
 
 import vku.duongdlt.winktraveller.util.AnimateVisibility
 import vku.duongdlt.winktraveller.navigation.Route
@@ -35,11 +34,25 @@ import vku.duongdlt.winktraveller.component.menuItems
 
 import vku.duongdlt.winktraveller.navigation.Screen
 import vku.duongdlt.winktraveller.ui.theme.WinKTravellerTheme
+import vku.duongdlt.winktraveller.view.BookingScreen
+import vku.duongdlt.winktraveller.view.CartScreen
+import vku.duongdlt.winktraveller.view.ConfirmationScreen
+import vku.duongdlt.winktraveller.view.DetailScreen
+import vku.duongdlt.winktraveller.view.FavouriteTourScreen
+import vku.duongdlt.winktraveller.view.HomeScreen
+import vku.duongdlt.winktraveller.view.InforBookingScreen
+import vku.duongdlt.winktraveller.view.InformationScreen
+import vku.duongdlt.winktraveller.view.LoginScreen
+import vku.duongdlt.winktraveller.view.ProfileScreen
+import vku.duongdlt.winktraveller.view.SignUpScreen
+import vku.duongdlt.winktraveller.view.SplashScreen
 
 class MainActivity : ComponentActivity() {
     private val locationViewModel: LocationViewModel by viewModels()
     private val userViewModel: UserViewModel by viewModels()
     private val tourViewModel: TourViewModel by viewModels()
+    private val bookingViewModel: BookingViewModel by viewModels()
+    private val bookmarkViewModel: BookmarkViewModel by viewModels()
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -48,7 +61,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             WinKTravellerTheme {
-                WinKUIMain(userViewModel, locationViewModel, tourViewModel)
+                WinKUIMain(userViewModel, locationViewModel, tourViewModel,bookingViewModel,bookmarkViewModel)
             }
         }
     }
@@ -59,7 +72,9 @@ class MainActivity : ComponentActivity() {
 fun WinKUIMain(
     userViewModel: UserViewModel,
     locationViewModel: LocationViewModel,
-    tourViewModel: TourViewModel
+    tourViewModel: TourViewModel,
+    bookingViewModel: BookingViewModel,
+    bookmarkViewModel: BookmarkViewModel
 ) {
 
     WinKTravellerTheme {
@@ -110,17 +125,17 @@ fun WinKUIMain(
 
                 is Screen.FavouriteTourScreen -> {
                     visible = true
-                    FavouriteTourScreen(routeState = routeState)
+                    FavouriteTourScreen(routeState = routeState, bookmarkViewModel = bookmarkViewModel,userViewModel, tourViewModel = tourViewModel)
                 }
 
                 is Screen.AllOrderScreen -> {
                     visible = true
-                    CartScreen(routeState = routeState)
+                    CartScreen(routeState = routeState,userViewModel = userViewModel,tourViewModel = tourViewModel,bookingViewModel = bookingViewModel)
                 }
 
                 is Screen.ProfileScreen -> {
                     visible = true
-                    ProfileScreen(routeState = routeState)
+                    ProfileScreen(routeState = routeState,userViewModel)
                 }
 
                 is Screen.DetailScreen -> {
@@ -128,7 +143,8 @@ fun WinKUIMain(
                     DetailScreen(
                         routeState = routeState,
                         tour = state.tour,
-                        tourviewModel = tourViewModel
+                        tourviewModel = tourViewModel,
+
                     )
                 }
 
@@ -138,9 +154,11 @@ fun WinKUIMain(
                         routeState = routeState,
                         onEvent = { /*TODO*/ },
                         onNavigateBack = { /*TODO*/ },
-                        tour = state.tour
+                        tour = state.tour,
+                        userViewModel = userViewModel
                     )
                 }
+
                 Screen.FirstScreen -> {
                     TODO()
                 }
@@ -151,16 +169,23 @@ fun WinKUIMain(
                     TODO()
                 }
 
-                is Screen.DetailScreen -> TODO()
                 is Screen.InforBookingScreen -> {
                     visible = false
-                    InforBookingScreen(routeState = routeState,tour = state.tour)
+                    InforBookingScreen(routeState = routeState,tour = state.tour,booking = state.booking,user =state.user,userViewModel = userViewModel)
                 }
 
-                is Screen.ConfirmationScreen -> TODO()
+                is Screen.ConfirmationScreen -> {
+                    visible = false
+                    ConfirmationScreen(routeState = routeState,booking = state.booking,tour = state.tour)
+                }
                 is Screen.SplashScreen -> {
                     visible = false
                     SplashScreen()
+                }
+
+                Screen.InformationScreen -> {
+                    visible = false
+                    InformationScreen(routeState = routeState,userViewModel = userViewModel)
                 }
             }
 //            if (routeState.value.screen !is Screen.LoginScreen && routeState.value.screen !is Screen.SignUpScreen && routeState.value.screen !is Screen.HomeScreen){

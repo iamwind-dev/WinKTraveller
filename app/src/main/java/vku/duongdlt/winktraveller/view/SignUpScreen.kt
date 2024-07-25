@@ -1,4 +1,4 @@
-package vku.duongdlt.winktraveller
+package vku.duongdlt.winktraveller.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,7 +16,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -30,11 +29,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.google.android.play.integrity.internal.i
 import kotlinx.coroutines.launch
 import vku.duongdlt.winktraveller.ViewModel.UserViewModel
 import vku.duongdlt.winktraveller.common.isEmptyString
@@ -42,7 +38,6 @@ import vku.duongdlt.winktraveller.common.isValidEmail
 import vku.duongdlt.winktraveller.model.User
 import vku.duongdlt.winktraveller.navigation.Route
 import vku.duongdlt.winktraveller.navigation.Screen
-import vku.duongdlt.winktraveller.ui.theme.WinKTravellerTheme
 
 @Composable
 fun SignUpScreen(routeState: MutableState<Route>, userViewModel: UserViewModel) {

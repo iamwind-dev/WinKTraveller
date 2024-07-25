@@ -1,4 +1,4 @@
-package vku.duongdlt.winktraveller
+package vku.duongdlt.winktraveller.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,11 +18,8 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,6 +39,7 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
+import vku.duongdlt.winktraveller.R
 import vku.duongdlt.winktraveller.ViewModel.TourViewModel
 import vku.duongdlt.winktraveller.component.HtmlText
 
@@ -50,12 +48,13 @@ import vku.duongdlt.winktraveller.navigation.Route
 import vku.duongdlt.winktraveller.component.PrimaryButton
 import vku.duongdlt.winktraveller.component.TitleWithReview
 import vku.duongdlt.winktraveller.component.tourDetailHeader
-import vku.duongdlt.winktraveller.model.Destination
-import vku.duongdlt.winktraveller.model.Location
+import vku.duongdlt.winktraveller.model.Booking
 import vku.duongdlt.winktraveller.model.Tour
+import vku.duongdlt.winktraveller.model.User
 import vku.duongdlt.winktraveller.navigation.Screen
 import vku.duongdlt.winktraveller.ui.theme.HeliaTheme
 import vku.duongdlt.winktraveller.util.ImageItem
+import vku.duongdlt.winktraveller.util.formatCurrency
 
 @Composable
 fun DetailScreen(routeState: MutableState<Route>, tour: Tour, tourviewModel: TourViewModel) {
@@ -135,7 +134,7 @@ fun contentSection(tour: Tour,tourviewModel: TourViewModel, onImageClicked: (Str
             Column {
                 Text(
                     text = tour.tour_name,
-                    color = colorResource(id=R.color.textColor),
+                    color = colorResource(id= R.color.textColor),
                     style = HeliaTheme.typography.heading3
                 )
                 Row(
@@ -144,14 +143,14 @@ fun contentSection(tour: Tour,tourviewModel: TourViewModel, onImageClicked: (Str
                 ) {
                     Icon(
                         modifier = Modifier.size(16.dp),
-                        painter = painterResource(id=R.drawable.ci_location),
+                        painter = painterResource(id= R.drawable.ci_location),
                         contentDescription = null,
-                        tint = colorResource(id=R.color.TextColor)
+                        tint = colorResource(id= R.color.TextColor)
                     )
                     Text(
                         modifier = Modifier.padding(start = 8.dp),
                         text = tour.tour_location_name,
-                        color = colorResource(id=R.color.TextColor),
+                        color = colorResource(id= R.color.TextColor),
                         style = HeliaTheme.typography.bodyLargeBold
                     )
                 }
@@ -161,14 +160,14 @@ fun contentSection(tour: Tour,tourviewModel: TourViewModel, onImageClicked: (Str
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = tour.tour_price.toString()+" $",
-                    color = colorResource(id=R.color.textColor),
+                    text = formatCurrency(tour.tour_price),
+                    color = colorResource(id= R.color.textColor),
                     style = HeliaTheme.typography.bodyLargeBold,
                     fontSize = TextUnit(24f, TextUnitType.Sp)
                 )
                 Text(
-                    text = "/${tour.tour_duration}",
-                    color = colorResource(id=R.color.secondTextColor),
+                    text = "/People",
+                    color = colorResource(id= R.color.secondTextColor),
                     style = HeliaTheme.typography.bodyMediumBold
                 )
             }
@@ -188,22 +187,24 @@ fun contentSection(tour: Tour,tourviewModel: TourViewModel, onImageClicked: (Str
             }
         }
 
+        Text(
+            modifier = Modifier.padding(start = 25.dp, top = 18.dp, end = 25.dp),
+            text = "Description",
+            color = colorResource(id=R.color.black),
+            style = HeliaTheme.typography.heading3,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Justify
+        )
+
         HtmlText(
             text = tour.tour_description,
             modifier = Modifier
                 .padding(start = 25.dp, top = 18.dp, end = 25.dp),
             fontSize = 20.sp,
-            style = HeliaTheme.typography.heading5
+            style = HeliaTheme.typography.bodyMediumMedium
             )
 
-//        Text(
-//            modifier = Modifier.padding(start = 25.dp, top = 18.dp, end = 25.dp),
-//            text = tour.tour_description,
-//            color = colorResource(id=R.color.secondTextColor),
-//            style = MaterialTheme.typography.bodyLarge,
-//            overflow = TextOverflow.Ellipsis,
-//            textAlign = TextAlign.Justify
-//        )
+
 
         TitleWithReview("Preview", "4.8", R.drawable.star)
 

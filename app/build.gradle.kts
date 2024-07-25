@@ -80,5 +80,7 @@ dependencies {
     api("dev.icerock.moko:resources-compose:0.23.0")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
     implementation ("com.github.ireward:compose-html:1.0.2")
+    implementation ("com.github.benjamin-luescher:compose-form:0.2.8")
+
 
 }

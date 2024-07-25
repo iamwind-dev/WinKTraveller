@@ -165,10 +165,11 @@ fun tourDetailHeader(routeState: MutableState<Route>, tour: Tour) {
                 }
         ) {
             val tintColor = if (isFav.value) R.color.red else R.color.textColor
+            val icon = if (isFav.value) R.drawable.ic_bookmark else R.drawable.ic_bookmark_border
             Icon(
                 modifier = Modifier.padding(6.dp),
-                painter = painterResource(R.drawable.menu_fav),
-                tint = colorResource(tintColor),
+                painter = painterResource(icon),
+                tint = colorResource(R.color.textColor),
                 contentDescription = null
             )
         }

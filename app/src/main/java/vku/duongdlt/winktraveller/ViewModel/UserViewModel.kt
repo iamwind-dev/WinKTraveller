@@ -1,4 +1,6 @@
 package vku.duongdlt.winktraveller.ViewModel
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -53,6 +55,23 @@ class UserViewModel : ViewModel() {
         })
     }
 
+    fun getUserById(userId: String, userCallback: (User?) -> Unit) {
+        val userRef = firebaseDatabase.getReference("users").child(userId)
+
+        userRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val user = dataSnapshot.getValue(User::class.java)
+                userCallback(user) // Invoke the callback with the retrieved user
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle error, e.g., log the error or invoke the callback with null
+                userCallback(null)
+            }
+        })
+    }
+
+
     fun getCurrentUser(callback: (User?) -> Unit) {
         val firebaseAuth = FirebaseAuth.getInstance()
         val firebaseDatabase = FirebaseDatabase.getInstance()
@@ -88,12 +107,21 @@ class UserViewModel : ViewModel() {
         }
     }
 
+    suspend fun logoutUser(): Boolean {
+        return try {
+            firebaseAuth.signOut()
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     suspend fun registerUser(name: String, email: String, password: String): Boolean {
         return try {
             val authResult =firebaseAuth.createUserWithEmailAndPassword(email, password).await()
             // Lấy UID của người dùng mới đăng ký
             val uid = authResult.user?.uid ?: return false
-            val user = User(id = uid, user_username = name, user_password = password, user_email = email)
+            val user = User(id = uid, user_username = name, user_email = email)
             // Lưu thông tin người dùng vào Firebase Realtime Database
             val databaseRef = FirebaseDatabase.getInstance().getReference("users").child(uid)
             databaseRef.setValue(user).await()
@@ -104,5 +132,15 @@ class UserViewModel : ViewModel() {
     }
 
     fun getCurrentUser() = firebaseAuth.currentUser
+
+
+    fun updateUserField(userId: String, fieldsToUpdate: Map<String, Any>, onComplete: (Boolean) -> Unit) {
+        val userRef = firebaseDatabase.getReference("users").child(userId)
+
+        userRef.updateChildren(fieldsToUpdate).addOnCompleteListener { task ->
+            onComplete(task.isSuccessful)
+        }
+    }
+
 }
 
